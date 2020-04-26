@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -9,12 +10,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import models.Player;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Controller {
 
@@ -25,22 +24,39 @@ public class Controller {
     @FXML private StackPane card5;
     @FXML private StackPane card6;
     @FXML private StackPane card7;
+    @FXML private StackPane questionCard;
     private StackPane[] cards;
 
     @FXML private Label expectedLabel;
 
     //How many cards need to be selected
     private int expected;
-    //Which cards have been selected, and in which order
-    private Queue<Integer> selectedCards;
+
+    //Which index cards have been selected, and in which order
+    private Queue<Integer> selectedIndices;
+
+    //Which indices are missing cards
+    private Queue<Integer> blankIndices;
 
     @FXML
     public void initialize(){
 
+        setBlank(questionCard);
+
+        //TODO FOR TESTING
         expected = 4;
-        selectedCards = new LinkedList<Integer>();
+
+        selectedIndices = new LinkedList<Integer>();
+        blankIndices = new LinkedList<Integer>();
         cards = new StackPane[]{card1, card2, card3, card4, card5, card6, card7};
+        for(StackPane p: cards){
+
+            setBlank(p);
+
+        }
         initListeners();
+
+        //TODO FOR TESTING
         test();
 
     }
@@ -80,9 +96,9 @@ public class Controller {
 
     public void handleClick(StackPane p){
 
-        if(selectedCards.size() < expected){
+        if(selectedIndices.size() < expected){
 
-            selectedCards.add(Integer.valueOf(p.getId().charAt(4)) - 49);
+            selectedIndices.add(Integer.valueOf(p.getId().charAt(4)) - 49);
             p.setStyle("-fx-background-color: chartreuse");
 
             Rectangle c = new Rectangle(12, 24, 12, 24);
@@ -90,7 +106,7 @@ public class Controller {
             p.getChildren().add(c);
             p.setAlignment(c, Pos.TOP_LEFT);
 
-            Text num = new Text(String.valueOf(selectedCards.size()));
+            Text num = new Text(String.valueOf(selectedIndices.size()));
             num.setFill(Color.RED);
             num.setStyle("-fx-font-size: 20");
             p.getChildren().add(num);
@@ -106,7 +122,7 @@ public class Controller {
     @FXML
     public void clear(){
 
-        for(int i: selectedCards){
+        for(int i: selectedIndices){
 
             List<Node> nodes = cards[i].getChildren();
 
@@ -128,32 +144,62 @@ public class Controller {
 
         }*/
 
-        selectedCards.clear();
+        selectedIndices.clear();
 
     }
 
+    //TODO FOR TESTING
     public void test(){
 
-        for(int i = 0; i < 7; i++){
+        new Thread(() -> {
 
-            //updateCard(i, "test");
+            Player p = new Player();
 
-        }
+            for(int i = 0; i < 7; i++){
 
-        Player p = new Player();
+                flipToNextEXT(cards[i], p.getCards()[i]);
 
-        for(int i = 0; i < 7; i++){
+            }
 
-            updateCard(i, p.getCards()[i]);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        }
+            for(StackPane s: cards){
 
-        setBlank(6);
+                flipToBlankEXT(s);
+
+            }
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for(int i = 0; i < 7; i++){
+
+                flipToNextEXT(cards[i], p.getCards()[i]);
+
+            }
+
+        }).start();
+
+        //setBlank(cards[0]);
+
+    }
+
+    @FXML
+    public void test2(){
+
+        flipToBlank(cards[0]);
 
     }
 
     /**
-     * Updates the exptected number of white cards the player must play
+     * Updates the expected number of white cards the player must play
      */
     public void setExpected(int expected){
 
@@ -162,14 +208,89 @@ public class Controller {
 
     }
 
+    public void flipToBlankEXT(StackPane p){
+
+        Platform.runLater(() -> flipToBlank(p));
+
+    }
+
+    /**
+     * Animation of flipping pane p to the slogan
+     * @param p
+     */
+    public void flipToBlank(StackPane p){
+
+        ScaleTransition hide = new ScaleTransition(Duration.millis(500), p);
+        hide.setFromX(1);
+        hide.setToX(0);
+
+        ScaleTransition show = new ScaleTransition(Duration.millis(500), p);
+        show.setFromX(0);
+        show.setToX(1);
+
+        hide.setOnFinished(e -> {
+
+            setBlank(p);
+            show.play();
+
+        });
+
+        hide.play();
+
+    }
+
+    //Safe version that can be called from external non GUI thread
+    public void flipToNextEXT(StackPane p, String next){
+
+        Platform.runLater(() -> flipToNext(p, next));
+
+    }
+
+    /**
+     * Animation of flipping pane p to the next card specified
+     * @param p
+     * @param next
+     */
+    public void flipToNext(StackPane p, String next){
+
+        ScaleTransition hide = new ScaleTransition(Duration.millis(500), p);
+        hide.setFromX(1);
+        hide.setToX(0);
+
+        ScaleTransition show = new ScaleTransition(Duration.millis(500), p);
+        show.setFromX(0);
+        show.setToX(1);
+
+        hide.setOnFinished(e -> {
+
+            updateCard(p, next);
+            show.play();
+
+        });
+
+        hide.play();
+
+    }
+
+    //Add the new cards to the missing indices
+    public void fillBlanks(String[] newCards){
+
+        for(String s: newCards){
+
+            flipToNext(cards[blankIndices.remove()], s);
+
+        }
+
+    }
+
     /**
      * Updates the number card specified with the string specified
-     * @param i
+     * @param p
      * @param str
      */
-    public void updateCard(int i, String str){
+    public void updateCard(StackPane p, String str){
 
-        List<Node> nodes = cards[i].getChildren();
+        List<Node> nodes = p.getChildren();
 
         //May need to check size is 1 first
         for(int j = nodes.size() - 1; j > 0; j--){
@@ -184,11 +305,11 @@ public class Controller {
 
     /**
      * Set card i to be blank with the slogan
-     * @param i
+     * @param p
      */
-    public void setBlank(int i){
+    public void setBlank(StackPane p){
 
-        List<Node> nodes = cards[i].getChildren();
+        List<Node> nodes = p.getChildren();
 
         //May need to check size is 1 first
         for(int j = nodes.size() - 1; j > 0; j--){
