@@ -199,15 +199,29 @@ public class Controller {
     }
 
     /**
+     * Call the same method from an external thread
+     * @param expected
+     */
+    public void setExpectedEXT(int expected){
+
+        Platform.runLater(() -> setExpected(expected));
+
+    }
+
+    /**
      * Updates the expected number of white cards the player must play
      */
     public void setExpected(int expected){
 
         this.expected = expected;
-        Platform.runLater(() -> expectedLabel.setText(String.valueOf(expected)));
+        expectedLabel.setText(String.valueOf(expected));
 
     }
 
+    /**
+     * Call method from external thread
+     * @param p
+     */
     public void flipToBlankEXT(StackPane p){
 
         Platform.runLater(() -> flipToBlank(p));
@@ -216,6 +230,7 @@ public class Controller {
 
     /**
      * Animation of flipping pane p to the slogan
+     *
      * @param p
      */
     public void flipToBlank(StackPane p){
@@ -239,7 +254,11 @@ public class Controller {
 
     }
 
-    //Safe version that can be called from external non GUI thread
+    /**
+     * Call method from external thread
+     * @param p
+     * @param next
+     */
     public void flipToNextEXT(StackPane p, String next){
 
         Platform.runLater(() -> flipToNext(p, next));
