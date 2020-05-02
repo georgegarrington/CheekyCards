@@ -64,6 +64,7 @@ public class Client {
 
         Socket s = null;
         try {
+            System.out.println("value of address is: " + address);
             s = new Socket(address, SERVERPORT);
         } catch (IOException e) {
             e.printStackTrace();

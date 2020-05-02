@@ -63,7 +63,7 @@ public class Launcher extends Application {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            stage.setTitle("Welcome to cheeky Cards ;)");
+            stage.setTitle("Login");
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
