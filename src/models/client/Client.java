@@ -17,7 +17,7 @@ public class Client {
     //Once the ui has loaded up the controller will add its reference here
     private Controller controller;
     private WelcomeController welcomeController;
-    private Stage welcomeStage;
+
 
     private final int SERVERPORT = 5005;
     private Scanner sc;
@@ -35,12 +35,6 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    public void associateWelcomeStage(Stage stage){
-
-        welcomeStage = stage;
 
     }
 
@@ -88,8 +82,8 @@ public class Client {
 
                 //Signal to the await login thread that it can begin loading the program
                 p.close();
-                Platform.runLater(() -> welcomeStage.close());
-                Injector.countDown();
+                Platform.runLater(() -> Injector.getWelcomeStage().close());
+                Injector.waitOnBarrier();
 
             });
             p.showButton();

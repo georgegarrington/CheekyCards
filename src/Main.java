@@ -13,7 +13,7 @@ public class Main {
             Injector.initClientSession(ADDRESS, SERVERPORT);
 
             //Seperate GUI stuff from main method
-            Launcher.initGUI(args);
+            new Launcher().initGUI(args);
 
         } else {
 

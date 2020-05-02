@@ -35,8 +35,8 @@ public class Popup {
         popup.initStyle(StageStyle.UNDECORATED);
         VBox v = new VBox();
         v.setAlignment(Pos.CENTER);
-        v.setPrefHeight(200);
-        v.setPrefWidth(300);
+        v.setPrefHeight(100);
+        v.setPrefWidth(250);
         popup.setScene(new Scene(v));
 
         label = new Label(message);

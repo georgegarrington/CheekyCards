@@ -1,10 +1,13 @@
 package models.util;
 
+import javafx.stage.Stage;
 import models.client.Client;
 import models.server.Coordinator;
 
 import javax.swing.*;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 /**
  * Contains all the references to each part of the application
@@ -15,13 +18,16 @@ public class Injector {
     private static Coordinator coordinator;
     private static boolean serverSession;
     private static boolean clientSession;
-    private static CountDownLatch latch;
+    private static CyclicBarrier barrier;
+    private static Stage welcomeStage;
 
     static {
 
         serverSession = false;
         clientSession = false;
-        latch = new CountDownLatch(2);
+
+        //2 to start with for the login sequence then change
+        barrier = new CyclicBarrier(2);
 
     }
 
@@ -78,26 +84,33 @@ public class Injector {
 
     }
 
-    public static void waitOnLatch(){
+    public static void newBarrier(int n){
+
+        barrier = new CyclicBarrier(2);
+
+    }
+
+    public static void waitOnBarrier(){
 
         try {
-            latch.await();
+            barrier.await();
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
             e.printStackTrace();
         }
 
     }
 
-    public static void countDown(){
+    public static void associateWelcomeStage(Stage stage){
 
-        latch.countDown();
-        System.out.println("new latch value: " + latch.getCount());
+        welcomeStage = stage;
 
     }
 
-    public void newLatch(int n){
+    public static Stage getWelcomeStage(){
 
-        latch = new CountDownLatch(n);
+        return welcomeStage;
 
     }
 

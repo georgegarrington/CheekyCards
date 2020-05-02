@@ -11,36 +11,22 @@ import java.util.concurrent.CountDownLatch;
 
 public class Launcher extends Application {
 
+    public void initGUI(String[] args) {
 
-    @Override
-    public void start(Stage stage) throws Exception {
-
-        Injector.getClient().associateWelcomeStage(stage);
-        Parent root = FXMLLoader.load(getClass().getResource("views/welcome.fxml"));
-        stage.setTitle("Welcome to cheeky Cards ;)");
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-        awaitLogin();
+        doLoginSequence();
+        launch(args);
 
     }
 
-    /**
-     * Once the login sequence has completed then the main GUI will load and the game will start
-     */
-    public void awaitLogin() {
+    public void start(Stage stage) throws Exception {
 
         new Thread(() -> {
 
-            Injector.countDown();
-            System.out.println("waiting on latch...");
-            Injector.waitOnLatch();
-            System.out.println("finished waiting on latch.");
+            Injector.waitOnBarrier();
 
             Platform.runLater(() -> {
 
-                System.out.println("hello im on the javafx thread");
-                Stage stage = new Stage();
+                //Injector.associateStage(stage); probably wont need this but keep here incase
                 Parent root = null;
 
                 try {
@@ -52,7 +38,6 @@ public class Launcher extends Application {
                 stage.setTitle("Cheeky cards ;)");
                 stage.setScene(new Scene(root));
                 stage.show();
-                System.out.println("finished javafx stuff");
 
             });
 
@@ -60,9 +45,27 @@ public class Launcher extends Application {
 
     }
 
-    public static void initGUI(String[] args){
+    /**
+     * Once the login sequence has completed then the main GUI will load and the game will start
+     */
+    public void doLoginSequence() {
 
-        launch(args);
+        Platform.startup(() -> {
+
+            Stage stage = new Stage();
+            Injector.associateWelcomeStage(stage);
+            Parent root = null;
+            try {
+                root = FXMLLoader.load(getClass().getResource("views/welcome.fxml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.setTitle("Welcome to cheeky Cards ;)");
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        });
 
     }
 
