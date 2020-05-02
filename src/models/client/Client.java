@@ -9,12 +9,14 @@ import models.io.Comms;
 import models.io.Message;
 import models.util.Injector;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
 
 public class Client {
 
     private final int SERVERPORT = 5005;
+    private String ADDRESS = "";
 
     //Once the ui has loaded up the controller will add its reference here
     private Controller controller;
@@ -56,7 +58,18 @@ public class Client {
      * Attempts to join with requested username and will keep prompting the user \
      * to enter a new username if the one they gave was invalid
      */
-    public void requestJoin(String str, String answer, String question, Popup p){
+    public void requestJoin(String str, String answer, String question, String address, Popup p){
+
+        ADDRESS = address;
+
+        Socket s = null;
+        try {
+            s = new Socket(address, SERVERPORT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        comms = new Comms(s);
+
 
         comms.sendJoinRequest(str, answer, question);
 
@@ -106,8 +119,6 @@ public class Client {
     public void init() throws Exception {
 
         players = new HashMap<String, Integer>();
-        Socket s = new Socket("localhost", SERVERPORT);
-        comms = new Comms(s);
 
     }
 

@@ -12,6 +12,7 @@ import javax.swing.*;
 public class WelcomeController {
 
 
+    @FXML private JFXTextField address;
     @FXML private JFXTextField username;
     @FXML private JFXTextField answer;
     @FXML private JFXTextField question;
@@ -32,10 +33,11 @@ public class WelcomeController {
         String text1 = username.getText();
         String text2 = answer.getText();
         String text3 = question.getText();
+        String text4 = address.getText();
 
         new Thread(() -> {
             try {
-                client.requestJoin(text1, text2, text3,
+                client.requestJoin(text1, text2, text3, text4,
                         new Popup("Checking with server if username is valid..."));
             } catch (Exception e) {
                 e.printStackTrace();
