@@ -14,11 +14,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import models.client.Client;
+import models.util.Injector;
 import models.util.TraversibleMapIterator;
 
 import java.util.*;
 
 public class Controller {
+
+    private Client client;
 
     @FXML private StackPane card1;
     @FXML private StackPane card2;
@@ -67,6 +71,9 @@ public class Controller {
 
     @FXML
     public void initialize(){
+
+        client = Injector.getClient();
+        client.associateController(this);
 
         setToBack(questionCard);
 

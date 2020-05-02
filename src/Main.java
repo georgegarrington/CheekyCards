@@ -1,31 +1,25 @@
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import models.util.Injector;
 
-public class Main extends Application {
+public class Main {
+
+    //Keep this hardcoded for now
+    private static final int SERVERPORT = 5005;
+    private static final String ADDRESS = "localhost";
 
     public static void main(String[] args){
 
-        launch(args);
+        if(args.length == 0 || args == null){
 
-        /*
-        String[] arr = "hello how are you ".split(" ");
-        System.out.println(arr[3]);*/
+            Injector.initClientSession(ADDRESS, SERVERPORT);
 
-    }
+            //Seperate GUI stuff from main method
+            Launcher.initGUI(args);
 
-    @Override
-    public void start(Stage stage) throws Exception {
+        } else {
 
-        Parent root = FXMLLoader.load(getClass().getResource("views/layout.fxml"));
-        stage.setTitle("Cheeky Cards ;)");
+            Injector.initServerSession(SERVERPORT);
 
-        Scene scene = new Scene(root);
-
-        stage.setScene(scene);
-        stage.show();
+        }
 
     }
 

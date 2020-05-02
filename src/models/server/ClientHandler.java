@@ -2,7 +2,7 @@ package models.server;
 
 import models.io.Comms;
 import models.io.Message;
-import models.Coordinator;
+import models.server.Coordinator;
 
 import java.net.Socket;
 import java.util.concurrent.CyclicBarrier;

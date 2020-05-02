@@ -1,26 +1,32 @@
 package models.client;
 
+import controllers.Controller;
+import controllers.WelcomeController;
+import controllers.popups.Popup;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 import models.io.Comms;
 import models.io.Message;
+import models.util.Injector;
 
 import java.net.Socket;
 import java.util.*;
 
 public class Client {
 
-    public static void main(String[] args){
-
-        System.out.println(countBlanks("helllo___how__are_you___"));
-
-        //new Client();
-
-    }
+    //Once the ui has loaded up the controller will add its reference here
+    private Controller controller;
+    private WelcomeController welcomeController;
+    private Stage welcomeStage;
 
     private final int SERVERPORT = 5005;
     private Scanner sc;
-    private Comms c;
+    private Comms comms;
     private Map<String, Integer> players;
     private int myTurn;
+
+    private String currentQuestionCard;
+    private List<String> myDeck = new ArrayList<String>(7);
 
     public Client(){
 
@@ -32,47 +38,74 @@ public class Client {
 
     }
 
-    String currentQuestionCard;
+    public void associateWelcomeStage(Stage stage){
 
-    private List<String> myDeck = new ArrayList<String>(7);
+        welcomeStage = stage;
 
-    private void init() throws Exception {
+    }
 
-        players = new HashMap<String, Integer>();
+    public void associateController(Controller controller){
 
-        Socket s = new Socket("localhost", SERVERPORT);
-        sc = new Scanner(System.in);
+        this.controller = controller;
 
-        c = new Comms(s);
+    }
 
-        String username = null;
+    public void associateWelcomeController(WelcomeController welcomeController){
 
-        while(username == null){
+        this.welcomeController = welcomeController;
 
-            System.out.println("Please enter your username: ");
-            username = sc.nextLine();
-            System.out.println("Requesting to join with username...");
+    }
 
-            c.sendJoinRequest(username);
+    /**
+     * Attempts to join with requested username and will keep prompting the user \
+     * to enter a new username if the one they gave was invalid
+     */
+    public void requestJoin(String str, Popup p){
 
-            //System.out.println("response sent!");
-            //System.out.println("waiting for servers response...");
+        comms.sendJoinRequest(str);
 
-            Message response = c.getMessage();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            if(response.header.equals("joinDenied")){
-                response = null;
-                System.out.println("Username denied. Please try again and pick another one");
-            }
+        //System.out.println("response sent!");
+        //System.out.println("waiting for servers response...");
+
+        Message response = comms.getMessage();
+
+        if(response.header.equals("joinDenied")){
+
+            response = null;
+            p.updateLabel("Username denied. Please try again and pick another one");
+            p.showButton();
+
+        } else {
+
+            p.updateLabel("Username accepted! Press ok to enter the game");
+            p.updateAction(e -> {
+
+                //Signal to the await login thread that it can begin loading the program
+                p.close();
+                Platform.runLater(() -> welcomeStage.close());
+                Injector.countDown();
+
+            });
+            p.showButton();
 
         }
 
-        System.out.println("Successfully joined :) with username: " + username);
-        System.out.println("Now going to wait for everyone to join so the game can start");
-        //System.out.println("My turn number is: " + response[1]);
-        //System.out.println("My first card is: " + reader.readLine());
+    }
 
-        Message m = c.getMessage();
+    public void init() throws Exception {
+
+        players = new HashMap<String, Integer>();
+        Socket s = new Socket("localhost", SERVERPORT);
+        comms = new Comms(s);
+
+        /*
+        Message m = comms.getMessage();
 
         if(!m.header.equals("gameStarting")){
 
@@ -105,7 +138,7 @@ public class Client {
 
         myDeck.addAll(m.answerCards);
 
-        System.out.println("The first question card is: " + m.questionCard);
+        System.out.println("The first question card is: " + m.questionCard);*/
 
     }
 

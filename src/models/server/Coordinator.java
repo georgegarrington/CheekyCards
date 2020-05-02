@@ -16,14 +16,6 @@ import java.util.concurrent.CyclicBarrier;
 
 public class Coordinator {
 
-    public static void main(String[] args){
-
-        System.out.println("Coordinator is hosting on IP address: " + getIP());
-
-        new Coordinator();
-
-    }
-
     /**
      * Get the IP address this server is hosting on to give it to the clients
      * so they can play the game
