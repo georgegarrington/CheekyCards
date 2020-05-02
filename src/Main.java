@@ -6,7 +6,15 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    public static void main(String[] args){launch(args);}
+    public static void main(String[] args){
+
+        launch(args);
+
+        /*
+        String[] arr = "hello how are you ".split(" ");
+        System.out.println(arr[3]);*/
+
+    }
 
     @Override
     public void start(Stage stage) throws Exception {

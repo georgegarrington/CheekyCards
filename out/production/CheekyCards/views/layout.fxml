@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import java.lang.Double?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
 <GridPane prefHeight="549.0" prefWidth="866.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
   <columnConstraints>
@@ -71,8 +75,81 @@
             </VBox>
          </left>
          <center>
-            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <FlowPane alignment="CENTER" prefHeight="374.0" prefWidth="661.0">
+                     <children>
+                        <StackPane fx:id="played1">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
+                                 <StackPane.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </StackPane.margin>
+                                 <FlowPane.margin>
+                                    <Insets left="50.0" />
+                                 </FlowPane.margin>
+                              </Rectangle>
+                           </children>
+                        </StackPane>
+                        <StackPane fx:id="played2">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
+                                 <StackPane.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </StackPane.margin>
+                                 <FlowPane.margin>
+                                    <Insets />
+                                 </FlowPane.margin>
+                              </Rectangle>
+                           </children>
+                        </StackPane>
+                        <StackPane fx:id="played3">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
+                                 <StackPane.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </StackPane.margin>
+                              </Rectangle>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </FlowPane>
+               </children></VBox>
          </center>
+         <bottom>
+            <FlowPane alignment="CENTER" prefHeight="104.0" prefWidth="866.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Polygon fx:id="left" fill="DODGERBLUE" rotate="270.0" scaleX="0.5" scaleY="0.5" stroke="BLACK" strokeType="INSIDE">
+                    <points>
+                      <Double fx:value="-50.0" />
+                      <Double fx:value="40.0" />
+                      <Double fx:value="50.0" />
+                      <Double fx:value="40.0" />
+                      <Double fx:value="0.0" />
+                      <Double fx:value="-60.0" />
+                    </points>
+                  </Polygon>
+                  <Label fx:id="display" text="OPTION 1">
+                     <FlowPane.margin>
+                        <Insets left="30.0" right="30.0" />
+                     </FlowPane.margin>
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Label>
+                  <Polygon fx:id="right" fill="DODGERBLUE" rotate="90.0" scaleX="0.5" scaleY="0.5" stroke="BLACK" strokeType="INSIDE">
+                     <points>
+                        <Double fx:value="-50.0" />
+                        <Double fx:value="40.0" />
+                        <Double fx:value="50.0" />
+                        <Double fx:value="40.0" />
+                        <Double fx:value="0.0" />
+                        <Double fx:value="-60.0" />
+                     </points>
+                  </Polygon>
+               </children>
+            </FlowPane>
+         </bottom>
       </BorderPane>
       <GridPane gridLinesVisible="true" prefHeight="137.0" prefWidth="600.0" style="-fx-background-color: #e0e0e0;" GridPane.rowIndex="1">
         <columnConstraints>
@@ -95,7 +172,7 @@
                         <Insets bottom="15.0" />
                      </VBox.margin>
                   </Label>
-                  <JFXButton onAction="#test2" style="-fx-background-color: #ab47bc;" text="PLAY" textFill="WHITE">
+                  <JFXButton style="-fx-background-color: #ab47bc;" text="PLAY" textFill="WHITE">
                      <VBox.margin>
                         <Insets bottom="20.0" />
                      </VBox.margin>

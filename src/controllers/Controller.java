@@ -1,17 +1,20 @@
 package controllers;
 
 import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import models.Player;
+import models.util.TraversibleMapIterator;
 
 import java.util.*;
 
@@ -24,13 +27,26 @@ public class Controller {
     @FXML private StackPane card5;
     @FXML private StackPane card6;
     @FXML private StackPane card7;
-    @FXML private StackPane questionCard;
     private StackPane[] cards;
 
+    @FXML private StackPane played1;
+    @FXML private StackPane played2;
+    @FXML private StackPane played3;
+    private StackPane[] playedCards;
+
+    @FXML private StackPane questionCard;
+
+    @FXML private Polygon right;
+    @FXML private Polygon left;
+
     @FXML private Label expectedLabel;
+    @FXML private Label display;
 
     //How many cards need to be selected
     private int expected;
+
+    //Which index(es) are being used to play on depending on the number of cards expected
+    private int[] activePlayIndices;
 
     //Which index cards have been selected, and in which order
     private Queue<Integer> selectedIndices;
@@ -38,26 +54,103 @@ public class Controller {
     //Which indices are missing cards
     private Queue<Integer> blankIndices;
 
+    //Whether or not the user should currently be selecting or not
+    private boolean selecting;
+
+    //Whether or not the user is the current judge
+    private boolean judge;
+
+    //For use when judging, each user is mapped to the cards they picked
+    //private Map<String, String[]> options;
+
+    private TraversibleMapIterator<String, String[]> optionIt;
+
     @FXML
     public void initialize(){
 
-        setBlank(questionCard);
+        setToBack(questionCard);
 
         //TODO FOR TESTING
         expected = 4;
 
         selectedIndices = new LinkedList<Integer>();
         blankIndices = new LinkedList<Integer>();
-        cards = new StackPane[]{card1, card2, card3, card4, card5, card6, card7};
-        for(StackPane p: cards){
 
-            setBlank(p);
+        //Use linked hash map so that order is retained
+        HashMap<String, String[]> options = new LinkedHashMap<String, String[]>();
+
+        //TODO FOR TESTING
+        options.put("Amelia", new String[]{"Academy award winner Meryl Streep", "Getting naked and watching cbeebies"});
+        options.put("Harriet", new String[]{"German chancellor Angela Merkel", "Becoming a blueberry"});
+        options.put("George", new String[]{"The gays.", "One titty hanging out"});
+
+        optionIt = new TraversibleMapIterator<String, String[]>(options);
+
+        cards = new StackPane[]{card1, card2, card3, card4, card5, card6, card7};
+        playedCards = new StackPane[]{played1, played2, played3};
+
+        //Make the played cards start at the top out of the ui
+        for(StackPane p: playedCards){
+
+            setToBack(p);
+            TranslateTransition transition = new TranslateTransition(Duration.millis(1), p);
+            transition.setByY(-300);
+            transition.setOnFinished(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+
+                    p.getChildren().get(0).setVisible(true);
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    enterPlayed(getIndex(p), "hello");
+
+                }
+            });
+            transition.play();
 
         }
+
+        //isFrontCards = new boolean[]{false,false,false,false,false,false,false};
+        //isFrontPlayed = new boolean[]{false,false,false};
+
+        selecting = false;
+
+        setToBack(questionCard);
+
+        for(StackPane p: cards){
+
+            setToBack(p);
+
+        }
+
+        for(int i = 0; i < cards.length; i += 2){
+
+            int in = i;
+            exitCard(in, e -> enterCard(in, "hello"));
+
+        }
+
         initListeners();
 
         //TODO FOR TESTING
-        test();
+        //test();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for(int i = 0; i < playedCards.length; i++){
+
+            enterPlayed(i, "hello");
+
+        }
 
     }
 
@@ -70,6 +163,13 @@ public class Controller {
             p.setOnMouseClicked(e -> handleClick(p));
 
         }
+
+        left.setOnMouseEntered(e -> handleButtonOver(left));
+        left.setOnMouseExited(e -> handleButtonExit(left));
+        left.setOnMouseClicked(e -> goLeft());
+        right.setOnMouseEntered(e -> handleButtonOver(right));
+        right.setOnMouseExited(e -> handleButtonExit(right));
+        right.setOnMouseClicked(e -> goRight());
 
     }
 
@@ -96,9 +196,9 @@ public class Controller {
 
     public void handleClick(StackPane p){
 
-        if(selectedIndices.size() < expected){
+        if(selectedIndices.size() < expected && !selectedIndices.contains(getIndex(p)) && selecting) {
 
-            selectedIndices.add(Integer.valueOf(p.getId().charAt(4)) - 49);
+            selectedIndices.add(getIndex(p));
             p.setStyle("-fx-background-color: chartreuse");
 
             Rectangle c = new Rectangle(12, 24, 12, 24);
@@ -111,6 +211,60 @@ public class Controller {
             num.setStyle("-fx-font-size: 20");
             p.getChildren().add(num);
             p.setAlignment(num, Pos.TOP_LEFT);
+
+        }
+
+    }
+
+    public void handleButtonOver(Polygon p){
+
+        p.setFill(Color.LIGHTBLUE);
+
+    }
+
+    public void handleButtonExit(Polygon p){
+
+        p.setFill(Color.DODGERBLUE);
+
+    }
+
+    public void goRight(){
+
+        right.setFill(Color.LIMEGREEN);
+
+    }
+
+    public void goLeft(){
+
+        left.setFill(Color.LIMEGREEN);
+
+    }
+
+    /**
+     * Gets the index of the card in the list it should be in
+     * @param p
+     * @return
+     */
+    public int getIndex(StackPane p){
+
+        return Integer.valueOf(p.getId().charAt(p.getId().length() - 1) - 49);
+
+    }
+
+    /**
+     * Whether or not this card is a played card or a deck card
+     * @param p
+     * @return
+     */
+    public boolean isPlayedCard(StackPane p){
+
+        if(p.getId().substring(0, p.getId().length() - 1) == "played"){
+
+            return true;
+
+        } else {
+
+            return false;
 
         }
 
@@ -148,6 +302,7 @@ public class Controller {
 
     }
 
+    /*
     //TODO FOR TESTING
     public void test(){
 
@@ -169,7 +324,7 @@ public class Controller {
 
             for(StackPane s: cards){
 
-                flipToBlankEXT(s);
+                flipToBackEXT(s, null);
 
             }
 
@@ -189,14 +344,7 @@ public class Controller {
 
         //setBlank(cards[0]);
 
-    }
-
-    @FXML
-    public void test2(){
-
-        flipToBlank(cards[0]);
-
-    }
+    }*/
 
     /**
      * Call the same method from an external thread
@@ -209,7 +357,7 @@ public class Controller {
     }
 
     /**
-     * Updates the expected number of white cards the player must play
+     * Updates the expected number of answer cards the player must play
      */
     public void setExpected(int expected){
 
@@ -219,12 +367,13 @@ public class Controller {
     }
 
     /**
-     * Call method from external thread
+     * Call the same method from an external thread
      * @param p
+     * @param onFinished
      */
-    public void flipToBlankEXT(StackPane p){
+    public void flipToBackEXT(StackPane p, EventHandler onFinished){
 
-        Platform.runLater(() -> flipToBlank(p));
+        Platform.runLater(() -> flipToBack(p, onFinished));
 
     }
 
@@ -232,30 +381,37 @@ public class Controller {
      * Animation of flipping pane p to the slogan
      *
      * @param p
+     * @param onFinished the action to perform after flipping, null if there is none
      */
-    public void flipToBlank(StackPane p){
+    public void flipToBack(StackPane p, EventHandler onFinished){
 
-        ScaleTransition hide = new ScaleTransition(Duration.millis(500), p);
+        ScaleTransition hide = new ScaleTransition(Duration.millis(250), p);
         hide.setFromX(1);
         hide.setToX(0);
 
-        ScaleTransition show = new ScaleTransition(Duration.millis(500), p);
+        ScaleTransition show = new ScaleTransition(Duration.millis(250), p);
         show.setFromX(0);
         show.setToX(1);
 
         hide.setOnFinished(e -> {
 
-            setBlank(p);
+            setToBack(p);
             show.play();
 
         });
 
         hide.play();
 
+        if(onFinished != null){
+
+            show.setOnFinished(onFinished);
+
+        }
+
     }
 
     /**
-     * Call method from external thread
+     * Call same method from an external thread
      * @param p
      * @param next
      */
@@ -272,17 +428,17 @@ public class Controller {
      */
     public void flipToNext(StackPane p, String next){
 
-        ScaleTransition hide = new ScaleTransition(Duration.millis(500), p);
+        ScaleTransition hide = new ScaleTransition(Duration.millis(250), p);
         hide.setFromX(1);
         hide.setToX(0);
 
-        ScaleTransition show = new ScaleTransition(Duration.millis(500), p);
+        ScaleTransition show = new ScaleTransition(Duration.millis(250), p);
         show.setFromX(0);
         show.setToX(1);
 
         hide.setOnFinished(e -> {
 
-            updateCard(p, next);
+            setToFrontAndUpdate(p, next);
             show.play();
 
         });
@@ -291,23 +447,12 @@ public class Controller {
 
     }
 
-    //Add the new cards to the missing indices
-    public void fillBlanks(String[] newCards){
-
-        for(String s: newCards){
-
-            flipToNext(cards[blankIndices.remove()], s);
-
-        }
-
-    }
-
     /**
      * Updates the number card specified with the string specified
      * @param p
      * @param str
      */
-    public void updateCard(StackPane p, String str){
+    public void setToFrontAndUpdate(StackPane p, String str){
 
         List<Node> nodes = p.getChildren();
 
@@ -318,7 +463,21 @@ public class Controller {
 
         }
 
-        nodes.add(new Text(str));
+        ((Rectangle) nodes.get(0)).setFill(Color.CORNSILK);
+        Text t = new Text(str);
+        t.setFill(Color.BLACK);
+        nodes.add(t);
+
+        /*
+        if(isPlayedCard(p)){
+
+            isFrontPlayed[getIndex(p)] = !isFrontPlayed[getIndex(p)];
+
+        } else {
+
+            isFrontCards[getIndex(p)] = !isFrontPlayed[getIndex(p)];
+
+        }*/
 
     }
 
@@ -326,7 +485,7 @@ public class Controller {
      * Set card i to be blank with the slogan
      * @param p
      */
-    public void setBlank(StackPane p){
+    public void setToBack(StackPane p){
 
         List<Node> nodes = p.getChildren();
 
@@ -337,7 +496,99 @@ public class Controller {
 
         }
 
-        nodes.add(new Text("CHEEKY \n CARDS \n    ;-)"));
+        Color c;
+        Color txt;
+
+        if(p.getId().equals("questionCard")){
+
+            c = Color.DARKBLUE;
+            txt = Color.WHITE;
+
+        } else {
+
+            c = Color.HOTPINK;
+            txt = Color.CORNSILK;
+
+        }
+
+        ((Rectangle) nodes.get(0)).setFill(c);
+        Text t = new Text("CHEEKY \n CARDS \n    ;-)");
+        t.setFill(txt);
+        t.setStyle("-fx-font-size: 15");
+        nodes.add(t);
+
+    }
+
+    /**
+     * Does an animation for played card index i exiting
+     * @param i
+     * @param onFinished what to do when the transition finishes, null if nothing
+     */
+    public void exitPlayed(int i, EventHandler onFinished){
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(1000), playedCards[i]);
+        transition.setByY(-300);
+        flipToBack(playedCards[i], e -> transition.play());
+
+        if(onFinished != null){
+
+            transition.setOnFinished(onFinished);
+
+        }
+
+    }
+
+    /**
+     * Does an animation for played card index i entering
+     * with the string of the new card
+     * @param i
+     * @param str
+     */
+    public void enterPlayed(int i, String str){
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(1000), playedCards[i]);
+        transition.setByY(300);
+        transition.play();
+        transition.setOnFinished(e -> flipToNext(playedCards[i], str));
+
+    }
+
+    /**
+     * Does an animation for deck card index i exiting
+     * @param i
+     * @param onFinished what to do when the transition has finished
+     */
+    public void exitCard(int i, EventHandler onFinished){
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(1000), cards[i]);
+        transition.setByY(300);
+
+        //First flip card to back then exit
+        flipToBack(cards[i], e -> transition.play());
+
+        transition.setOnFinished(onFinished);
+
+    }
+
+    /**
+     * Does an animation for deck card index i entering
+     * with the string of the new card
+     * @param i
+     * @param str
+     */
+    public void enterCard(int i, String str){
+
+        /*
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(1000), cards[i]);
+        transition.setByY(-300);
+        transition.play();
+        transition.setOnFinished(e -> flipToNext(cards[i], str));
 
     }
 
