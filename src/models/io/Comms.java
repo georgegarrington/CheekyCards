@@ -54,9 +54,9 @@ public class Comms {
 
     }
 
-    public void sendJoinRequest(String requested){
+    public void sendJoinRequest(String requested, String answer, String question){
 
-        Message m = new Message("joinRequest", requested);
+        Message m = new Message("joinRequest", requested, answer, question);
         sendToNetwork(m);
 
     }

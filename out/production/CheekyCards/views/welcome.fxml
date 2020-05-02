@@ -11,7 +11,7 @@
    <children>
       <VBox alignment="CENTER" prefHeight="368.0" prefWidth="347.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Cheeky Cards ;-)" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Cheeky Cards ;-)" underline="true" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Please paste the code that George sent you:">
                <VBox.margin>
                   <Insets top="20.0" />
@@ -37,7 +37,7 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </Text>
-            <JFXTextField prefHeight="26.0" prefWidth="252.0">
+            <JFXTextField fx:id="answer" prefHeight="26.0" prefWidth="252.0">
                <VBox.margin>
                   <Insets right="20.0" top="10.0" />
                </VBox.margin>
@@ -47,7 +47,7 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </Text>
-            <JFXTextField>
+            <JFXTextField fx:id="question">
                <VBox.margin>
                   <Insets right="20.0" top="10.0" />
                </VBox.margin>

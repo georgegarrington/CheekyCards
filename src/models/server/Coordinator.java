@@ -55,7 +55,7 @@ public class Coordinator {
     private static final int PORT = 5005;
 
     //How many players are expected to join this game
-    private final int EXPECTED = 2;
+    private final int EXPECTED = 1;
 
     private String currentQuestionCard;
     private Stack<String> questionCards;
@@ -73,14 +73,12 @@ public class Coordinator {
         questionCards = new Stack<String>();
         answerCards = new Stack<String>();
         importCards();
-        Collections.shuffle(questionCards);
-        Collections.shuffle(answerCards);
 
         //TODO for testing delete later
-        System.out.println("Cards loaded and shuffled. Question cards size: " + questionCards.size());
+        System.out.println("Cards loaded. Question cards size: " + questionCards.size());
         System.out.println("And the answer cards list size: " + answerCards.size());
 
-        users = new ArrayList<String>(0);
+        users = new ArrayList<String>();
         handlers = new ArrayList<ClientHandler>();
 
         //To account for each client handler thread and the main thread also
@@ -147,6 +145,7 @@ public class Coordinator {
 
         //TODO FOR TESTING DELETE LATER
         System.out.println("server socket address says: " + ss.getInetAddress());
+        System.out.println("but other address thing says: " + getIP());
         System.out.println("waiting for people to join");
 
         for(int numJoined = 0; numJoined < EXPECTED; numJoined++){
@@ -160,7 +159,13 @@ public class Coordinator {
 
         ss.close();
 
+        barrier.await();
+
+        //All custom cards have been added by this point so shuffle them
+        Collections.shuffle(answerCards);
+        Collections.shuffle(questionCards);
         currentQuestionCard = questionCards.pop();
+
         barrier.await();
 
     }
@@ -190,6 +195,30 @@ public class Coordinator {
                 }
 
             }
+
+        }
+
+    }
+
+    public void addCustomQuestion(String q){
+
+        synchronized (questionCards){
+
+            //TODO for testing delete later
+            System.out.println("Adding custom question: " + q);
+            questionCards.push(q);
+
+        }
+
+    }
+
+    public void addCustomAnswer(String a){
+
+        synchronized (answerCards){
+
+            //TODO for testing delete later
+            System.out.println("Adding custom answer: " + a);
+            answerCards.push(a);
 
         }
 

@@ -3,12 +3,12 @@ package controllers;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -46,6 +46,9 @@ public class Controller {
     @FXML private Label expectedLabel;
     @FXML private Label display;
 
+    @FXML private Text overlayText;
+    @FXML private GridPane leaderboardGrid;
+
     //How many cards need to be selected
     private int expected;
 
@@ -77,6 +80,21 @@ public class Controller {
 
         setToBack(questionCard);
 
+        cards = new StackPane[]{card1, card2, card3, card4, card5, card6, card7};
+        playedCards = new StackPane[]{played1, played2, played3};
+
+        for(StackPane p: cards){
+            setToBack(p);
+        }
+
+        //Wait for the init message to be received
+        Injector.waitOnBarrier();
+
+        //Once the init message has been received the label can vanish
+        overlayText.setVisible(false);
+        new Thread(() -> client.setupGame()).start();
+
+        /*
         //TODO FOR TESTING
         expected = 4;
 
@@ -157,7 +175,7 @@ public class Controller {
 
             enterPlayed(i, "hello");
 
-        }
+        }*/
 
     }
 

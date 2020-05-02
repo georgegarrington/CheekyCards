@@ -22,25 +22,10 @@ class ClientHandler implements Runnable {
 
         comms = new Comms(s);
 
-        /*
-        try {
-            init(s);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
         this.c = c;
         this.b = b;
 
     }
-
-    /*
-    private void init(Socket s) throws Exception{
-
-        reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        writer = new PrintWriter(s.getOutputStream(), true);
-
-    }*/
 
     public void run(){
 
@@ -76,6 +61,9 @@ class ClientHandler implements Runnable {
 
             } else {
 
+                //TODO possibility of two identical answer and question cards being picked very unlikely, leave like this for now
+                c.addCustomAnswer(m.customAnswer);
+                c.addCustomQuestion(m.questionCard);
                 username = m.requestedName;
 
             }
@@ -85,8 +73,7 @@ class ClientHandler implements Runnable {
         comms.sendMessage("joinSuccess");
 
         b.await();
-        //System.out.println("Sending first card to " + username);
-        //comms.sendInitMessage(c.getCurrentQuestionCards());
+        b.await();
 
         System.out.println("Going to let " + username + " know that the game is starting");
         comms.sendInitMessage(c.getCurrentQuestionCard(), c.getNAnswerCards(7), c.getUsers());

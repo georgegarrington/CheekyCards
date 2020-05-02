@@ -11,6 +11,7 @@ public class Message implements Serializable {
     public String header;
     public String requestedName;
     public String questionCard;
+    public String customAnswer;
 
     /*
     If sending to coordinator then the list of cards played,
@@ -33,10 +34,12 @@ public class Message implements Serializable {
      * @param header
      * @param requestedName
      */
-    public Message(String header, String requestedName){
+    public Message(String header, String requestedName, String customAnswer, String customQuestion){
 
         this(header);
         this.requestedName = requestedName;
+        this.customAnswer = customAnswer;
+        questionCard = customQuestion;
 
     }
 

@@ -14,15 +14,17 @@ import java.util.*;
 
 public class Client {
 
+    private final int SERVERPORT = 5005;
+
     //Once the ui has loaded up the controller will add its reference here
     private Controller controller;
     private WelcomeController welcomeController;
 
-
-    private final int SERVERPORT = 5005;
-    private Scanner sc;
+    //The last message just sent by the server
+    private Message lastMessage;
     private Comms comms;
     private Map<String, Integer> players;
+    private String myUsername;
     private int myTurn;
 
     private String currentQuestionCard;
@@ -54,12 +56,12 @@ public class Client {
      * Attempts to join with requested username and will keep prompting the user \
      * to enter a new username if the one they gave was invalid
      */
-    public void requestJoin(String str, Popup p){
+    public void requestJoin(String str, String answer, String question, Popup p){
 
-        comms.sendJoinRequest(str);
+        comms.sendJoinRequest(str, answer, question);
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -80,10 +82,19 @@ public class Client {
             p.updateLabel("Username accepted! Press ok to enter the game");
             p.updateAction(e -> {
 
+                myUsername = str;
                 //Signal to the await login thread that it can begin loading the program
                 p.close();
                 Platform.runLater(() -> Injector.getWelcomeStage().close());
+
+                //To tell the main app to open
                 Injector.waitOnBarrier();
+                new Thread(() -> {
+                    lastMessage = comms.getMessage();
+                    //To let controller know the init message has been received
+                    Injector.waitOnBarrier();
+                    //System.out.println("init message received: " + lastMessage.header);
+                }).start();
 
             });
             p.showButton();
@@ -98,41 +109,48 @@ public class Client {
         Socket s = new Socket("localhost", SERVERPORT);
         comms = new Comms(s);
 
-        /*
-        Message m = comms.getMessage();
+    }
 
-        if(!m.header.equals("gameStarting")){
+    public void setupGame(){
 
-            System.out.println("Expected the game to start! uh oh");
+        if(!lastMessage.header.equals("gameStarting")){
+
+            Injector.error("Expected the game to start! uh oh this shouldn't be happening");
 
         } else {
 
+            //TODO for testing delete later
             System.out.println("Game starting woohoo!");
 
         }
 
+        //TODO for testing delete later
         System.out.println("The list of players in order by their turn is: ");
 
-        for(int i = 1; i < m.users.size(); i++){
+        for(int i = 1; i < lastMessage.users.size(); i++){
 
-            players.put(m.users.get(i), i);
+            if(lastMessage.users.get(i).equals(myUsername))
+                myTurn = i;
+
+            players.put(lastMessage.users.get(i), i);
+            System.out.println(lastMessage.users.get(i));
 
         }
 
-        myTurn = players.get(username);
+        System.out.println("my turn is: " + myTurn);
 
+        //TODO for testing delete later
         System.out.println("My initial deck cards are: ");
-
-
-        for(String str: m.answerCards){
+        for(String str: lastMessage.answerCards){
 
             System.out.println(str);
 
         }
 
-        myDeck.addAll(m.answerCards);
+        myDeck.addAll(lastMessage.answerCards);
 
-        System.out.println("The first question card is: " + m.questionCard);*/
+        //TODO for testing delete later
+        System.out.println("The first question card is: " + lastMessage.questionCard);
 
     }
 

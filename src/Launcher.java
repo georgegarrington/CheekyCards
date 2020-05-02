@@ -24,6 +24,8 @@ public class Launcher extends Application {
 
             Injector.waitOnBarrier();
 
+            System.out.println("Finished waiting on barrier");
+
             Platform.runLater(() -> {
 
                 //Injector.associateStage(stage); probably wont need this but keep here incase
@@ -31,6 +33,7 @@ public class Launcher extends Application {
 
                 try {
                     root = FXMLLoader.load(getClass().getResource("views/layout.fxml"));
+                    System.out.println("value of root: " + root.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

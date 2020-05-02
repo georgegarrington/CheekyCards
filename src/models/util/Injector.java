@@ -86,7 +86,7 @@ public class Injector {
 
     public static void newBarrier(int n){
 
-        barrier = new CyclicBarrier(2);
+        barrier = new CyclicBarrier(n);
 
     }
 

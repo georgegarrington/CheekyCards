@@ -14,6 +14,7 @@
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <GridPane prefHeight="549.0" prefWidth="866.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
   <columnConstraints>
@@ -29,9 +30,9 @@
             <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <children>
                   <Label text="Leaderboard" underline="true" />
-                  <GridPane>
+                  <GridPane fx:id="leaderboardGrid">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints fx:id="leaderBoard" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
@@ -77,43 +78,52 @@
          <center>
             <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <children>
-                  <FlowPane alignment="CENTER" prefHeight="374.0" prefWidth="661.0">
+                  <StackPane>
                      <children>
-                        <StackPane fx:id="played1">
+                        <FlowPane alignment="CENTER" prefHeight="374.0" prefWidth="661.0">
                            <children>
-                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
-                                 <StackPane.margin>
-                                    <Insets left="20.0" right="20.0" />
-                                 </StackPane.margin>
-                                 <FlowPane.margin>
-                                    <Insets left="50.0" />
-                                 </FlowPane.margin>
-                              </Rectangle>
+                              <StackPane fx:id="played1">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
+                                       <StackPane.margin>
+                                          <Insets left="20.0" right="20.0" />
+                                       </StackPane.margin>
+                                       <FlowPane.margin>
+                                          <Insets left="50.0" />
+                                       </FlowPane.margin>
+                                    </Rectangle>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="played2">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
+                                       <StackPane.margin>
+                                          <Insets left="20.0" right="20.0" />
+                                       </StackPane.margin>
+                                       <FlowPane.margin>
+                                          <Insets />
+                                       </FlowPane.margin>
+                                    </Rectangle>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="played3">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
+                                       <StackPane.margin>
+                                          <Insets left="20.0" right="20.0" />
+                                       </StackPane.margin>
+                                    </Rectangle>
+                                 </children>
+                              </StackPane>
                            </children>
-                        </StackPane>
-                        <StackPane fx:id="played2">
-                           <children>
-                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
-                                 <StackPane.margin>
-                                    <Insets left="20.0" right="20.0" />
-                                 </StackPane.margin>
-                                 <FlowPane.margin>
-                                    <Insets />
-                                 </FlowPane.margin>
-                              </Rectangle>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="played3">
-                           <children>
-                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c0e1ff" height="160.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="95.0">
-                                 <StackPane.margin>
-                                    <Insets left="20.0" right="20.0" />
-                                 </StackPane.margin>
-                              </Rectangle>
-                           </children>
-                        </StackPane>
+                        </FlowPane>
+                        <Text fx:id="overlayText" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting for everyone to join...">
+                           <font>
+                              <Font size="26.0" />
+                           </font>
+                        </Text>
                      </children>
-                  </FlowPane>
+                  </StackPane>
                </children></VBox>
          </center>
          <bottom>

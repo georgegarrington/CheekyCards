@@ -13,6 +13,8 @@ public class WelcomeController {
 
 
     @FXML private JFXTextField username;
+    @FXML private JFXTextField answer;
+    @FXML private JFXTextField question;
 
     private Client client;
 
@@ -27,11 +29,13 @@ public class WelcomeController {
     @FXML
     public void requestJoin(){
 
-        String text = username.getText();
+        String text1 = username.getText();
+        String text2 = answer.getText();
+        String text3 = question.getText();
 
         new Thread(() -> {
             try {
-                client.requestJoin(text,
+                client.requestJoin(text1, text2, text3,
                         new Popup("Checking with server if username is valid..."));
             } catch (Exception e) {
                 e.printStackTrace();
