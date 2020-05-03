@@ -1,5 +1,6 @@
 package controllers;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -19,10 +20,7 @@ import models.client.Client;
 import models.util.Injector;
 import models.util.TraversibleMapIterator;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Controller {
 
@@ -52,12 +50,12 @@ public class Controller {
     @FXML private Text overlayText;
 
     @FXML private GridPane leaderboardGrid;
+    @FXML private JFXButton pickButton;
 
     //How many cards need to be selected
     private int expected;
 
-    //Which index(es) are being used to play on depending on the number of cards expected
-    private int[] activePlayIndices;
+    private Set<Integer> activePlayIndices;
 
     //Which index cards have been selected, and in which order
     private Queue<Integer> selectedIndices;
@@ -88,6 +86,7 @@ public class Controller {
 
         cards = new StackPane[]{card1, card2, card3, card4, card5, card6, card7};
         playedCards = new StackPane[]{played1, played2, played3};
+        activePlayIndices = new HashSet<Integer>();
 
         setToBack(questionCard);
         for(StackPane p: cards){
@@ -433,10 +432,63 @@ public class Controller {
 
         Platform.runLater(() -> {
 
-            overlayText.setText("You are the judge for this round. \n Waiting for the other players to \n submit their cards...");
+            overlayText.setText("You are the judge for this round. \n " +
+                    "Please read out the question card to everyone. \n" +
+                    "When the other players have selected their cards, \n"
+            + "they will be presented to you for judging here");
             overlayText.setVisible(true);
 
         });
+
+    }
+
+    /**
+     * Present the judge with the initial set of options of cards,
+     * allowing them to go left and right to see the rest
+     * @param initial
+     */
+    public void presentOptions(List<String> initial){
+
+        System.out.println("Now going to present options...");
+        pickButton.setVisible(true);
+        pickButton.setDisable(false);
+        overlayText.setText("");
+        overlayText.setVisible(false);
+        
+        activePlayIndices.clear();
+        setPlayingIndices(initial.size());
+
+        for(int i: activePlayIndices){
+
+            enterPlayed(i, initial.remove(0));
+
+        }
+
+    }
+
+    public void setPlayingIndices(int n){
+
+        if(n < 1 || n > 3){
+
+            throw new Error("This should never be happening!");
+
+        }
+
+    }
+
+    public void pickWinner(){
+
+        pickButton.setVisible(false);
+        pickButton.setDisable(true);
+
+        for(int i = 0; i < playedCards.length; i++){
+
+            exitPlayed(i, null);
+
+        }
+
+        //Inform the client thread that the winner has been picked
+        new Thread(() -> Injector.waitOnBarrier()).start();
 
     }
 
