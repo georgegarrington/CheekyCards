@@ -76,7 +76,7 @@ public class Controller {
     private TraversibleMapIterator<String, String[]> optionIt;
 
     //How long each card takes to flip
-    private static final int FLIPTIME = 500;
+    private static final int FLIPTIME = 300;
 
     @FXML
     public void initialize(){

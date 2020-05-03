@@ -27,7 +27,7 @@ public class Message implements Serializable {
     //Let the judge know which cards were played in what order and by who
     public Map<String, List<String>> playedCards;
 
-    static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
 
     public Message(String header){
 

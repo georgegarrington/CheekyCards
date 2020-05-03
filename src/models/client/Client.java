@@ -133,7 +133,7 @@ public class Client {
 
     public void playGame(){
 
-        int currentTurn = 1;
+        int currentTurn = 0;
 
         //The game just keeps on going :)
         while(true){
