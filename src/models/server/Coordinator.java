@@ -161,7 +161,16 @@ public class Coordinator {
 
         ss.close();
 
+        //Wait until all client threads have started
         Injector.waitOnBarrier();
+
+        System.out.println("The players in order by their turn are: ");
+
+        for(ClientHandler h: handlers){
+
+            System.out.println(h.getUsername());
+
+        }
 
         //All custom cards have been added by this point so shuffle them
         Collections.shuffle(answerCards);
