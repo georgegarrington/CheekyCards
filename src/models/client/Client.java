@@ -164,7 +164,7 @@ public class Client {
 
     public void playJudgeRound(){
 
-
+        controller.informJudging();
 
     }
 

@@ -112,6 +112,8 @@ class ClientHandler implements Runnable {
 
     public void playJudgeRound() throws Exception{
 
+        System.out.println(username + " is judging in this round");
+
         //Wait for the played cards to be received
         b.await();
 
@@ -121,7 +123,17 @@ class ClientHandler implements Runnable {
 
     public void playAnswerRound() throws Exception {
 
+        System.out.println(username + " is playing in this round");
+
         Message playedCardsMessage = comms.getMessage();
+
+        System.out.println(username + " played some cards! They were:");
+
+        for(String s: playedCardsMessage.answerCards){
+
+            System.out.println(s);
+
+        }
 
         if(!playedCardsMessage.header.equals("playedCards")){
 
