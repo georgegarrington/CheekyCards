@@ -478,6 +478,8 @@ public class Controller {
 
         }
 
+        activePlayIndices.add(1);
+
         for(int i: activePlayIndices){
 
             System.out.println("Entering: " + initial.get(0));
