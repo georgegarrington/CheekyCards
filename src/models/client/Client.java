@@ -166,6 +166,9 @@ public class Client {
 
         controller.informJudging();
 
+        //Wait until the played cards have been received
+        Injector.waitOnBarrier();
+        
     }
 
     public void playAnswerRound(){
