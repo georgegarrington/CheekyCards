@@ -139,11 +139,11 @@ public class Client {
         for(int i = 0; i < lastMessage.users.size(); i++){
 
             //Add all the players by their turn
-            players.put(lastMessage.users.get(i),i + 1);
+            players.put(lastMessage.users.get(i),i);
 
             //Get which turn this client has
             if(lastMessage.users.get(i).equals(myUsername))
-                myTurn = i + 1;
+                myTurn = i;
 
         }
 
@@ -243,7 +243,8 @@ public class Client {
         //TODO for testing delete later
         System.out.println("The list of players in order by their turn is: ");
 
-        for(int i = 1; i < lastMessage.users.size(); i++){
+
+        for(int i = 0; i < lastMessage.users.size(); i++){
 
             if(lastMessage.users.get(i).equals(myUsername))
                 myTurn = i;
@@ -271,7 +272,6 @@ public class Client {
     }
 
     boolean judging = true;
-    int currentTurn = 1;
 
     Scanner s = new Scanner(System.in);
 
