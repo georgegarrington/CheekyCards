@@ -179,7 +179,7 @@ public class Client {
 
             //Should never go larger than players.size() but do just incase for good practice
             if(currentTurn >= players.size());
-                currentTurn = 1;
+                currentTurn = 0;
 
         }
 
