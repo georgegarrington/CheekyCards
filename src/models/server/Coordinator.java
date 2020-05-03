@@ -274,4 +274,14 @@ public class Coordinator {
 
     }
 
+    public Map<String, List<String>> getPlayedCardsThisRound(){
+
+        synchronized (playedCardsThisRound){
+
+            return playedCardsThisRound;
+
+        }
+
+    }
+
 }

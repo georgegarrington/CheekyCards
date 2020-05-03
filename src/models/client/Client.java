@@ -129,6 +129,18 @@ public class Client {
 
         //Wait for the message to be received then start
         Injector.waitOnBarrier();
+
+        for(int i = 0; i < lastMessage.users.size(); i++){
+
+            //Add all the players by their turn
+            players.put(lastMessage.users.get(i),i + 1);
+
+            //Get which turn this client has
+            if(lastMessage.users.get(i).equals(myUsername))
+                myTurn = i + 1;
+
+        }
+
         controller.initGameGUI(lastMessage.answerCards, lastMessage.questionCard, lastMessage.users);
         currentQuestionCard = lastMessage.questionCard;
         playGame();
@@ -170,13 +182,21 @@ public class Client {
 
         controller.informJudging();
 
-        //Wait until the played cards have been received
-        Injector.waitOnBarrier();
-        
+        Message cardsForJudge = comms.getMessage();
+
+        if(!cardsForJudge.header.equals("cardsForJudging")){
+
+            throw new Error("This should not be possible!");
+
+        }
+
+        System.out.println("cards to judge received! size: " + cardsForJudge.playedCards.size());
+
     }
 
     public void playAnswerRound(){
 
+        System.out.println("Playing answer round");
         controller.promptSelection(countNumRequired(currentQuestionCard));
 
         //Wait until the player has chosen a valid selection

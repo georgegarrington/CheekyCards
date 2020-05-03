@@ -117,6 +117,11 @@ class ClientHandler implements Runnable {
         //Wait for the played cards to be received
         b.await();
 
+        System.out.println("played cards received. Sending to judge...");
+
+        comms.sendCardsToJudge(c.getPlayedCardsThisRound());
+
+
 
 
     }
