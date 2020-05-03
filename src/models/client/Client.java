@@ -39,6 +39,15 @@ public class Client {
             e.printStackTrace();
         }
 
+        Socket s = null;
+        try {
+            System.out.println("value of address is: " + ADDRESS);
+            s = new Socket(ADDRESS, SERVERPORT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        comms = new Comms(s);
+
     }
 
     public void associateController(Controller controller){
@@ -60,17 +69,6 @@ public class Client {
     public void requestJoin(String str, String answer, String question, String address, Popup p){
 
         ADDRESS = address;
-
-        Socket s = null;
-        try {
-            System.out.println("value of address is: " + address);
-            s = new Socket(address, SERVERPORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        comms = new Comms(s);
-
-
         comms.sendJoinRequest(str, answer, question);
 
         try {
