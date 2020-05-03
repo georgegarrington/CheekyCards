@@ -13,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import models.client.Client;
 import models.util.Injector;
@@ -494,11 +495,11 @@ public class Controller {
      */
     public void flipToNext(StackPane p, String next){
 
-        ScaleTransition hide = new ScaleTransition(Duration.millis(2000), p);
+        ScaleTransition hide = new ScaleTransition(Duration.millis(1000), p);
         hide.setFromX(1);
         hide.setToX(0);
 
-        ScaleTransition show = new ScaleTransition(Duration.millis(2000), p);
+        ScaleTransition show = new ScaleTransition(Duration.millis(1000), p);
         show.setFromX(0);
         show.setToX(1);
 
@@ -532,8 +533,8 @@ public class Controller {
         Rectangle r = (Rectangle) nodes.get(0);
         r.setFill(Color.CORNSILK);
         Text t = new Text(str);
-        t.setX(r.getX());
-        t.setY(r.getY());
+        t.setTextAlignment(TextAlignment.CENTER);
+        t.setWrappingWidth(r.getWidth() - 10);
         t.setFill(Color.BLACK);
         nodes.add(t);
 
