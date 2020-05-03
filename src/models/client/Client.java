@@ -23,10 +23,12 @@ public class Client {
 
     //The last message just sent by the server
     private Message lastMessage;
+    private Socket socket;
     private Comms comms;
     private Map<String, Integer> players;
     private String myUsername;
     private int myTurn;
+
 
     private String currentQuestionCard;
     private List<String> myDeck = new ArrayList<String>(7);
@@ -38,15 +40,6 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Socket s = null;
-        try {
-            System.out.println("value of address is: " + ADDRESS);
-            s = new Socket(ADDRESS, SERVERPORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        comms = new Comms(s);
 
     }
 
@@ -69,6 +62,19 @@ public class Client {
     public void requestJoin(String str, String answer, String question, String address, Popup p){
 
         ADDRESS = address;
+
+        try {
+            System.out.println("value of address is: " + ADDRESS);
+            socket = new Socket(ADDRESS, SERVERPORT);
+            comms = new Comms(socket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            p.close();
+            Injector.error("That link was invalid! Please try again");
+            //If an invalid address was given
+            socket = null;
+        }
+
         comms.sendJoinRequest(str, answer, question);
 
         try {
