@@ -45,8 +45,8 @@ public class Controller {
 
     @FXML private Label expectedLabel;
     @FXML private Label display;
-
     @FXML private Text overlayText;
+
     @FXML private GridPane leaderboardGrid;
 
     //How many cards need to be selected
@@ -79,14 +79,19 @@ public class Controller {
         client = Injector.getClient();
         client.associateController(this);
 
-        setToBack(questionCard);
-
         cards = new StackPane[]{card1, card2, card3, card4, card5, card6, card7};
         playedCards = new StackPane[]{played1, played2, played3};
 
+        setToBack(questionCard);
         for(StackPane p: cards){
             setToBack(p);
         }
+
+        selecting = false;
+        selectedIndices = new LinkedList<Integer>();
+        blankIndices = new LinkedList<Integer>();
+        initListeners();
+        new Thread(() -> client.startGame()).start();
 
         //Wait for the init message to be received
         //Injector.waitOnBarrier();
@@ -180,6 +185,40 @@ public class Controller {
         }*/
 
     }
+
+    /**
+     * Called when the game is about to start and the first message has been received
+     */
+    public void initGameGUI(List<String> answerCards, String questionCard, List<String> players, int currentTurn){
+
+        Platform.runLater(() -> {
+
+            if(answerCards.size() != 7)
+                throw new Error("This should not be happening!");
+
+            for(int i = 0; i < 7; i++){
+
+                flipToNext(cards[i], answerCards.get(i));
+
+            }
+
+            flipToNext(this.questionCard, questionCard);
+
+            if(players.size() > 7){
+                throw new Error("There is only support for 7 players at the moment!");
+            }
+
+            for(int i = 0; i < players.size(); i++){
+
+                leaderboardGrid.add(new Label(players.get(i)),0,i);
+                leaderboardGrid.add(new Label("0"),1,i);
+
+            }
+
+        });
+
+    }
+
 
     public void initListeners(){
 
@@ -455,11 +494,11 @@ public class Controller {
      */
     public void flipToNext(StackPane p, String next){
 
-        ScaleTransition hide = new ScaleTransition(Duration.millis(250), p);
+        ScaleTransition hide = new ScaleTransition(Duration.millis(2000), p);
         hide.setFromX(1);
         hide.setToX(0);
 
-        ScaleTransition show = new ScaleTransition(Duration.millis(250), p);
+        ScaleTransition show = new ScaleTransition(Duration.millis(2000), p);
         show.setFromX(0);
         show.setToX(1);
 
@@ -490,8 +529,11 @@ public class Controller {
 
         }
 
-        ((Rectangle) nodes.get(0)).setFill(Color.CORNSILK);
+        Rectangle r = (Rectangle) nodes.get(0);
+        r.setFill(Color.CORNSILK);
         Text t = new Text(str);
+        t.setX(r.getX());
+        t.setY(r.getY());
         t.setFill(Color.BLACK);
         nodes.add(t);
 

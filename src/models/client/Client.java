@@ -122,6 +122,14 @@ public class Client {
 
     }
 
+    public void startGame(){
+
+        //Wait for the message to be received then start
+        Injector.waitOnBarrier();
+        controller.initGameGUI(lastMessage.answerCards, lastMessage.questionCard, lastMessage.users, myTurn);
+
+    }
+
     public void init() throws Exception {
 
         players = new HashMap<String, Integer>();
