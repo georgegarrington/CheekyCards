@@ -4,7 +4,6 @@ import controllers.Controller;
 import controllers.WelcomeController;
 import controllers.popups.Popup;
 import javafx.application.Platform;
-import javafx.stage.Stage;
 import models.io.Comms;
 import models.io.Message;
 import models.util.Injector;
@@ -126,7 +125,58 @@ public class Client {
 
         //Wait for the message to be received then start
         Injector.waitOnBarrier();
-        controller.initGameGUI(lastMessage.answerCards, lastMessage.questionCard, lastMessage.users, myTurn);
+        controller.initGameGUI(lastMessage.answerCards, lastMessage.questionCard, lastMessage.users);
+        currentQuestionCard = lastMessage.questionCard;
+        playGame();
+
+    }
+
+    public void playGame(){
+
+        int currentTurn = 1;
+
+        //The game just keeps on going :)
+        while(true){
+
+            System.out.println("my turn is: " + myTurn);
+
+            if(myTurn == currentTurn){
+
+                System.out.println("playing judge round");
+                playJudgeRound();
+
+            } else {
+
+                System.out.println("Playing answer round");
+                playAnswerRound();
+
+            }
+
+            currentTurn++;
+
+            //Should never go larger than players.size() but do just incase for good practice
+            if(currentTurn >= players.size());
+                currentTurn = 1;
+
+        }
+
+    }
+
+    public void playJudgeRound(){
+
+
+
+    }
+
+    public void playAnswerRound(){
+
+        controller.promptSelection(countNumRequired(currentQuestionCard));
+
+        //Wait until the player has chosen a valid selection
+        Injector.waitOnBarrier();
+
+        List<String> playedCards = controller.getSelected();
+        comms.sendCards(playedCards);
 
     }
 
@@ -276,7 +326,7 @@ public class Client {
      * @param questionCard
      * @return
      */
-    public static int countBlanks(String questionCard){
+    public static int countNumRequired(String questionCard){
 
         int out = 0;
 

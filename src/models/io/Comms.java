@@ -44,6 +44,31 @@ public class Comms {
 
     }
 
+    public Message getMessage(){
+
+        if(reader == null){
+
+            try {
+                reader = new ObjectInputStream(s.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        try {
+            return (Message) reader.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //Should never happen but keep incase
+        return null;
+
+    }
+
     /**
      * Send a simple one liner message
      */
@@ -71,28 +96,18 @@ public class Comms {
 
     }
 
-    public Message getMessage(){
+    //How many new deck cards the client that calls this needs
+    public void requestNewDeckCards(int n){
 
-        if(reader == null){
+        Message m = new Message("requestNewDeckCards", n);
+        sendToNetwork(m);
 
-            try {
-                reader = new ObjectInputStream(s.getInputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    }
 
-        }
+    public void sendCards(List<String> playedCards){
 
-        try {
-            return (Message) reader.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        //Should never happen but keep incase
-        return null;
+        Message m = new Message("playedCards", playedCards);
+        sendToNetwork(m);
 
     }
 

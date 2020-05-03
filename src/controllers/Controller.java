@@ -73,6 +73,9 @@ public class Controller {
 
     private TraversibleMapIterator<String, String[]> optionIt;
 
+    //How long each card takes to flip
+    private static final int FLIPTIME = 500;
+
     @FXML
     public void initialize(){
 
@@ -190,9 +193,11 @@ public class Controller {
     /**
      * Called when the game is about to start and the first message has been received
      */
-    public void initGameGUI(List<String> answerCards, String questionCard, List<String> players, int currentTurn){
+    public void initGameGUI(List<String> answerCards, String questionCard, List<String> players){
 
         Platform.runLater(() -> {
+
+            overlayText.setVisible(false);
 
             if(answerCards.size() != 7)
                 throw new Error("This should not be happening!");
@@ -262,6 +267,12 @@ public class Controller {
     }
 
     public void handleClick(StackPane p){
+
+        System.out.println("went in handle click method");
+        System.out.println("selected indices: " + selectedIndices.size());
+        System.out.println("expected: " + expected);
+        System.out.println("doesnt contains p? " + !selectedIndices.contains(getIndex(p)));
+        System.out.println("selecting: " + selecting);
 
         if(selectedIndices.size() < expected && !selectedIndices.contains(getIndex(p)) && selecting) {
 
@@ -414,6 +425,62 @@ public class Controller {
     }*/
 
     /**
+     * Prompt the player to select the number of cards specified
+     */
+    public void promptSelection(int n){
+
+        Platform.runLater(() -> {
+
+            overlayText.setText("Please select the required number of cards \n in the order you wish them to be played");
+            overlayText.setVisible(true);
+            selecting = true;
+            expected = 1;
+            System.out.println("selecting is: " + selecting);
+
+        });
+
+    }
+
+    @FXML
+    /**
+     * Called by the play button
+     */
+    public void playCards(){
+
+        if(selectedIndices.size() == expected){
+
+            overlayText.setText("Selection sent to judge. \n Waiting for other players...");
+
+            for(int i: selectedIndices){
+
+                flipToBack(cards[i], e -> exitPlayed(i, null));
+
+            }
+
+            selecting = false;
+
+            //Tell the client thread that the player has chosen their cards
+            new Thread(() -> Injector.waitOnBarrier());
+
+        }
+
+    }
+
+    public List<String> getSelected(){
+
+        List<String> out = null;
+
+        for(int i: selectedIndices){
+
+            out.add(((Text) playedCards[i].getChildren().get(1)).getText());
+
+        }
+
+        return out;
+
+    }
+
+    /**
      * Call the same method from an external thread
      * @param expected
      */
@@ -452,11 +519,11 @@ public class Controller {
      */
     public void flipToBack(StackPane p, EventHandler onFinished){
 
-        ScaleTransition hide = new ScaleTransition(Duration.millis(250), p);
+        ScaleTransition hide = new ScaleTransition(Duration.millis(FLIPTIME), p);
         hide.setFromX(1);
         hide.setToX(0);
 
-        ScaleTransition show = new ScaleTransition(Duration.millis(250), p);
+        ScaleTransition show = new ScaleTransition(Duration.millis(FLIPTIME), p);
         show.setFromX(0);
         show.setToX(1);
 
@@ -495,11 +562,11 @@ public class Controller {
      */
     public void flipToNext(StackPane p, String next){
 
-        ScaleTransition hide = new ScaleTransition(Duration.millis(1000), p);
+        ScaleTransition hide = new ScaleTransition(Duration.millis(FLIPTIME), p);
         hide.setFromX(1);
         hide.setToX(0);
 
-        ScaleTransition show = new ScaleTransition(Duration.millis(1000), p);
+        ScaleTransition show = new ScaleTransition(Duration.millis(FLIPTIME), p);
         show.setFromX(0);
         show.setToX(1);
 
@@ -533,21 +600,11 @@ public class Controller {
         Rectangle r = (Rectangle) nodes.get(0);
         r.setFill(Color.CORNSILK);
         Text t = new Text(str);
-        t.setTextAlignment(TextAlignment.CENTER);
+
+        //Allow 5 pixel margin each side of the text
         t.setWrappingWidth(r.getWidth() - 10);
         t.setFill(Color.BLACK);
         nodes.add(t);
-
-        /*
-        if(isPlayedCard(p)){
-
-            isFrontPlayed[getIndex(p)] = !isFrontPlayed[getIndex(p)];
-
-        } else {
-
-            isFrontCards[getIndex(p)] = !isFrontPlayed[getIndex(p)];
-
-        }*/
 
     }
 

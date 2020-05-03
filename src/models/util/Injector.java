@@ -33,19 +33,31 @@ public class Injector {
 
     /**
      * Start up a client session
-     * @param address
-     * @param port
      */
-    public static void initClientSession(String address, int port){
+    public static void initClientSession(){
 
         client = new Client();
         clientSession = true;
 
     }
 
-    public static void initServerSession(int port){
+    public static void initServerSession(String numPlayers){
 
-        coordinator = new Coordinator();
+        if(!Character.isDigit(numPlayers.charAt(0))){
+
+            throw new Error("Invalid argument! Please enter a number between 1 and 7");
+
+        }
+
+        int val = Integer.parseInt(numPlayers);
+
+        if (val > 7) {
+
+            throw new Error("Invalid argument! Please enter a number between 1 and 7");
+
+        }
+
+        coordinator = new Coordinator(val);
         serverSession = true;
 
     }

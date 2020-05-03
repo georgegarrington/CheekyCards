@@ -2,22 +2,22 @@ import models.util.Injector;
 
 public class Main {
 
-    //Keep this hardcoded for now
-    private static final int SERVERPORT = 5005;
-    private static final String ADDRESS = "localhost";
-
     public static void main(String[] args){
 
         if(args.length == 0 || args == null){
 
-            Injector.initClientSession(ADDRESS, SERVERPORT);
+            Injector.initClientSession();
 
             //Seperate GUI stuff from main method
             new Launcher().initGUI(args);
 
+        } else if (args[0].equals("server")) {
+
+            Injector.initServerSession(args[1]);
+
         } else {
 
-            Injector.initServerSession(SERVERPORT);
+            throw new Error("Usage: java Main server [number of players], or provide no arguments to start a client session");
 
         }
 

@@ -55,7 +55,7 @@ public class Coordinator {
     private static final int PORT = 5005;
 
     //How many players are expected to join this game
-    private final int EXPECTED = 2;
+    private static int EXPECTED;
 
     private String currentQuestionCard;
     private Stack<String> questionCards;
@@ -65,7 +65,9 @@ public class Coordinator {
     private List<ClientHandler> handlers;
     private CyclicBarrier barrier;
 
-    public Coordinator(){
+    public Coordinator(int numPlayers){
+
+        EXPECTED = numPlayers;
 
         //TODO for testing delete later
         System.out.println("Coordinator started :) Now going to start loading cards: ");
