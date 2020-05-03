@@ -217,6 +217,18 @@ public class Client {
 
         }
 
+        System.out.println("Contents of traversible key list:");
+
+        for(String s: traversible.getKeyList()){
+
+            System.out.println(s);
+
+        }
+
+        System.out.println("Value of current traversible index: " + traversible.getCurrentIndex());
+
+        System.out.println("Value of current traversible objet: " + traversible.getCurrentObj());
+
         controller.presentOptions(traversible.getCurrentObj());
 
         //Wait for the judge to pick their option

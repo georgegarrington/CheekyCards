@@ -95,7 +95,11 @@ public class Controller {
 
         for(int i = 0; i < playedCards.length; i++){
             final int forLambda = i;
-            exitPlayed(i, e -> playedCards[forLambda].setVisible(true));
+
+            //Nice chaining of animation actions :)
+            exitPlayed(i, e -> flipToBack(playedCards[forLambda],
+                    f -> playedCards[forLambda].setVisible(true)));
+
         }
 
         selecting = false;
@@ -466,6 +470,12 @@ public class Controller {
 
         for(int i: activePlayIndices){
             System.out.println(i);
+        }
+
+        for(StackPane p: playedCards){
+
+            System.out.println("Is the played card visible?" + p.isVisible());
+
         }
 
         for(int i: activePlayIndices){
