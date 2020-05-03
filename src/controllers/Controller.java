@@ -93,6 +93,11 @@ public class Controller {
             setToBack(p);
         }
 
+        for(int i = 0; i < playedCards.length; i++){
+            final int forLambda = i;
+            exitPlayed(i, e -> playedCards[forLambda].setVisible(true));
+        }
+
         selecting = false;
         selectedIndices = new LinkedList<Integer>();
         blankIndices = new LinkedList<Integer>();
@@ -460,6 +465,7 @@ public class Controller {
 
         for(int i: activePlayIndices){
 
+            System.out.println("Entering: " + initial.get(0));
             enterPlayed(i, initial.remove(0));
 
         }
