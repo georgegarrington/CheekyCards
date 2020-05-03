@@ -95,6 +95,12 @@ public class Injector {
 
     }
 
+    public static CyclicBarrier getBarrier(){
+
+        return barrier;
+
+    }
+
     public static void newBarrier(int n){
 
         barrier = new CyclicBarrier(n);

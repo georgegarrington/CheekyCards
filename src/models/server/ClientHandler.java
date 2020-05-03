@@ -2,9 +2,9 @@ package models.server;
 
 import models.io.Comms;
 import models.io.Message;
+import models.util.Injector;
 
 import java.net.Socket;
-import java.util.concurrent.CyclicBarrier;
 
 class ClientHandler implements Runnable {
 
@@ -15,14 +15,12 @@ class ClientHandler implements Runnable {
     //private PrintWriter writer;
     private Comms comms;
     private Coordinator c;
-    private CyclicBarrier b;
 
-    public ClientHandler(Socket s, Coordinator c, CyclicBarrier b){
+    public ClientHandler(Socket s, Coordinator c){
 
         comms = new Comms(s);
 
         this.c = c;
-        this.b = b;
 
     }
 
@@ -73,10 +71,20 @@ class ClientHandler implements Runnable {
         turn--;
         comms.sendMessage("joinSuccess");
 
-        b.await();
+        System.out.println("Client handler for: " + username + " is now waiting 1st");
+
+        //Tell the coordinator to start shuffling and get the question card ready
+        Injector.waitOnBarrier();
+
+        System.out.println(username + ": ok finished first now waiting on second");
 
         //Wait for the cards to be shuffled and the current question card to be selected
-        b.await();
+        Injector.waitOnBarrier();
+
+        System.out.println(username + ": ok finished waiting on second");
+
+        Thread.sleep(2000);
+
 
         System.out.println("Going to let " + username + " know that the game is starting");
         comms.sendInitMessage(c.getCurrentQuestionCard(), c.getNAnswerCards(7), c.getUsers());
@@ -114,8 +122,10 @@ class ClientHandler implements Runnable {
 
         System.out.println(username + " is judging in this round");
 
+        System.out.println("judge handler thread now going to wait...");
         //Wait for the played cards to be received
-        b.await();
+        Injector.waitOnBarrier();
+        System.out.println("judge handler thread finished waiting");
 
         System.out.println("played cards received. Sending to judge...");
 
@@ -148,11 +158,14 @@ class ClientHandler implements Runnable {
 
         c.addPlayedCardsThisRound(username, playedCardsMessage.answerCards);
 
+        System.out.println("About to tell the judge the cards were received");
+        System.out.println("Also the number waiting on the barrier is: " + Injector.getBarrier().getNumberWaiting() +
+                " and the number of parties is: " + Injector.getBarrier().getParties());
         //Tell judge thread that the cards have now been received
-        b.await();
+        Injector.waitOnBarrier();
 
         //Wait for the judge to make their choice
-        b.await();
+        Injector.waitOnBarrier();
 
     }
 

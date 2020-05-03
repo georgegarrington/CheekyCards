@@ -64,9 +64,15 @@ public class Client {
         ADDRESS = address;
 
         try {
-            System.out.println("value of address is: " + ADDRESS);
-            socket = new Socket(ADDRESS, SERVERPORT);
-            comms = new Comms(socket);
+
+            if(socket == null){
+
+                System.out.println("value of address is: " + ADDRESS);
+                socket = new Socket(ADDRESS, SERVERPORT);
+                comms = new Comms(socket);
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             p.close();
@@ -182,7 +188,9 @@ public class Client {
 
         controller.informJudging();
 
+        System.out.println("Judge is now going to wait for played cards to be received");
         Message cardsForJudge = comms.getMessage();
+        System.out.println("Judge finished waiting cos I got a message! :)");
 
         if(!cardsForJudge.header.equals("cardsForJudging")){
 
@@ -191,6 +199,8 @@ public class Client {
         }
 
         System.out.println("cards to judge received! size: " + cardsForJudge.playedCards.size());
+
+
 
     }
 
@@ -201,9 +211,13 @@ public class Client {
 
         //Wait until the player has chosen a valid selection
         Injector.waitOnBarrier();
+        System.out.println("Past barrier so client must have chosen valid cards");
 
         List<String> playedCards = controller.getSelected();
+
+        System.out.println("Now going to send cards to judge. Size: " + playedCards.size());
         comms.sendCards(playedCards);
+        System.out.println("sent");
 
     }
 

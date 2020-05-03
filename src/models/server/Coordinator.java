@@ -1,5 +1,7 @@
 package models.server;
 
+import models.util.Injector;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.CyclicBarrier;
 
 public class Coordinator {
 
@@ -60,7 +61,6 @@ public class Coordinator {
 
     private List<String> users;
     private List<ClientHandler> handlers;
-    private CyclicBarrier barrier;
     private Map<String, List<String>> playedCardsThisRound;
 
     public Coordinator(int numPlayers){
@@ -82,7 +82,7 @@ public class Coordinator {
         handlers = new ArrayList<ClientHandler>();
 
         //To account for each client handler thread and the main thread also
-        barrier = new CyclicBarrier(EXPECTED + 1);
+        Injector.newBarrier(EXPECTED + 1);
 
         playedCardsThisRound = new HashMap<String, List<String>>();
 
@@ -155,24 +155,32 @@ public class Coordinator {
             Socket s = ss.accept();
             System.out.println("New client joined!");
 
-            new Thread(new ClientHandler(s, this, barrier)).start();
+            new Thread(new ClientHandler(s, this)).start();
 
         }
 
         ss.close();
 
-        barrier.await();
+        Injector.waitOnBarrier();
 
         //All custom cards have been added by this point so shuffle them
         Collections.shuffle(answerCards);
         Collections.shuffle(questionCards);
         currentQuestionCard = questionCards.pop();
 
+
+        System.out.println("Coordinator: how many threads waiting on the barrier? " + Injector.getBarrier().getNumberWaiting());
         //Tell the threads that the cards have been shuffled
-        barrier.await();
+        Injector.waitOnBarrier();
+
+        System.out.println("Coordinator: about to make a new barrier");
 
         //Coordinator initialisation thread is now done, the handler threads will manage the game now
-        barrier = new CyclicBarrier(barrier.getParties() - 1);
+        Injector.newBarrier(EXPECTED);
+
+        System.out.println("New barrier made with size: " + Injector.getBarrier().getParties());
+
+        System.out.println("Main coordinator thread finished, made new barrier");
 
     }
 

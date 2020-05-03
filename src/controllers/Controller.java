@@ -19,6 +19,7 @@ import models.client.Client;
 import models.util.Injector;
 import models.util.TraversibleMapIterator;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -481,7 +482,9 @@ public class Controller {
             }
 
             //Tell the client thread that the player has chosen their cards
-            new Thread(() -> Injector.waitOnBarrier());
+            System.out.println("Client chose valid cards");
+            System.out.println("number waiting on barrier: " + Injector.getBarrier().getNumberWaiting());
+            new Thread(() -> Injector.waitOnBarrier()).start();
 
         }
 
@@ -489,11 +492,22 @@ public class Controller {
 
     public List<String> getSelected(){
 
-        List<String> out = null;
+        List<String> out = new ArrayList<String>();
+
+        System.out.println("selected indices size: " + selectedIndices.size());
+        System.out.println("contents of selected indices are: ");
 
         for(int i: selectedIndices){
 
-            out.add(((Text) playedCards[i].getChildren().get(1)).getText());
+            System.out.println(i);
+
+            System.out.println("Contents of text on selected index: " + ((Text) cards[i].getChildren().get(1)).getText());
+
+        }
+
+        for(int i: selectedIndices){
+
+            out.add(((Text) cards[i].getChildren().get(1)).getText());
 
         }
 
