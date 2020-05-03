@@ -203,6 +203,20 @@ public class Client {
 
         traversible = new TraversibleMapIterator<String, List<String>>(cardsForJudge.playedCards);
 
+        System.out.println("Contents of played cards:");
+
+        for(String s: cardsForJudge.playedCards.keySet()){
+
+            System.out.println("Player: " + s + " who played:");
+
+            for(String str: cardsForJudge.playedCards.get(s)){
+
+                System.out.println(str);
+
+            }
+
+        }
+
         controller.presentOptions(traversible.getCurrentObj());
 
         //Wait for the judge to pick their option
