@@ -462,6 +462,11 @@ public class Controller {
 
         activePlayIndices.clear();
         setPlayingIndices(initial.size());
+        System.out.println("Contents of active play indices:");
+
+        for(int i: activePlayIndices){
+            System.out.println(i);
+        }
 
         for(int i: activePlayIndices){
 
