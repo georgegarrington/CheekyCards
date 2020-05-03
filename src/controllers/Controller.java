@@ -454,7 +454,7 @@ public class Controller {
         pickButton.setDisable(false);
         overlayText.setText("");
         overlayText.setVisible(false);
-        
+
         activePlayIndices.clear();
         setPlayingIndices(initial.size());
 

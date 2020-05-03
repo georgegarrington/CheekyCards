@@ -69,6 +69,12 @@ public class TraversibleMapIterator<U, V> {
 
     }
 
+    public V getCurrentObj(){
+
+        return map.get(orderedKeys.get(i));
+
+    }
+
     public int getCurrentIndex(){
 
         return i;

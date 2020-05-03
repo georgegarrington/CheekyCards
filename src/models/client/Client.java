@@ -203,7 +203,7 @@ public class Client {
 
         traversible = new TraversibleMapIterator<String, List<String>>(cardsForJudge.playedCards);
 
-        controller.presentOptions();
+        controller.presentOptions(traversible.getCurrentObj());
 
         //Wait for the judge to pick their option
         Injector.waitOnBarrier();
