@@ -34,6 +34,12 @@ class ClientHandler implements Runnable {
 
     }
 
+    public String getUsername(){
+
+        return username;
+
+    }
+
     public void doProtocol() throws Exception{
 
         //Keep going until they have entered a valid name

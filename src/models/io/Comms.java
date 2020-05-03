@@ -119,4 +119,24 @@ public class Comms {
 
     }
 
+    /**
+     * Tell all client sessions to go to the option on the right
+     */
+    public void goRight(){
+
+        Message m = new Message("goRight");
+        sendToNetwork(m);
+
+    }
+
+    /**
+     * Tell all client sessions to go to the option on the left
+     */
+    public void goLeft(){
+
+        Message m = new Message("goLeft");
+        sendToNetwork(m);
+
+    }
+
 }

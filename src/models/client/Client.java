@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import models.io.Comms;
 import models.io.Message;
 import models.util.Injector;
+import models.util.TraversibleMapIterator;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -200,7 +201,46 @@ public class Client {
 
         System.out.println("cards to judge received! size: " + cardsForJudge.playedCards.size());
 
+        traversible = new TraversibleMapIterator<String, List<String>>(cardsForJudge.playedCards);
 
+        controller.presentOptions(traversible.getCurrentObj());
+
+        //Wait for the judge to pick their option
+        Injector.waitOnBarrier();
+
+    }
+
+    private TraversibleMapIterator<String, List<String>> traversible;
+
+    /**
+     * Returns the option to the right (if there is one)
+     * @return
+     */
+    public List<String> getRight(){
+
+        if(traversible == null){
+
+            throw new Error("This should be impossible!");
+
+        }
+
+        return traversible.goRight();
+
+    }
+
+    /**
+     * Returns the option to the left (if there is one)
+     * @return
+     */
+    public List<String> getLeft(){
+
+        if(traversible == null){
+
+            throw new Error("This should be impossible!");
+
+        }
+
+        return traversible.goLeft();
 
     }
 
