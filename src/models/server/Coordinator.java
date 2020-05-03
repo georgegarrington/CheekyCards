@@ -55,7 +55,7 @@ public class Coordinator {
     private static final int PORT = 5005;
 
     //How many players are expected to join this game
-    private final int EXPECTED = 1;
+    private final int EXPECTED = 2;
 
     private String currentQuestionCard;
     private Stack<String> questionCards;

@@ -75,6 +75,7 @@ public class Controller {
     @FXML
     public void initialize(){
 
+        System.out.println("Hello Im in the controller initialize method");
         client = Injector.getClient();
         client.associateController(this);
 
@@ -88,11 +89,12 @@ public class Controller {
         }
 
         //Wait for the init message to be received
-        Injector.waitOnBarrier();
+        //Injector.waitOnBarrier();
 
+        //TODO dont do this here, make a seperate startgame method which affects the GUI
         //Once the init message has been received the label can vanish
-        overlayText.setVisible(false);
-        new Thread(() -> client.setupGame()).start();
+        //overlayText.setVisible(false);
+        //new Thread(() -> client.setupGame()).start();
 
         /*
         //TODO FOR TESTING

@@ -103,9 +103,14 @@ public class Client {
                 //To tell the main app to open
                 Injector.waitOnBarrier();
                 new Thread(() -> {
+
+                    System.out.println("waiting for init message from server...");
                     lastMessage = comms.getMessage();
+                    System.out.println("init message recieved");
                     //To let controller know the init message has been received
+                    System.out.println("waiting on barrier after getting messaged");
                     Injector.waitOnBarrier();
+                    System.out.println("finished waiting on barrier after getting message");
                     //System.out.println("init message received: " + lastMessage.header);
                 }).start();
 
