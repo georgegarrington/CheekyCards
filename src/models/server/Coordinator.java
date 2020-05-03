@@ -8,10 +8,7 @@ import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.concurrent.CyclicBarrier;
 
 public class Coordinator {
@@ -64,6 +61,7 @@ public class Coordinator {
     private List<String> users;
     private List<ClientHandler> handlers;
     private CyclicBarrier barrier;
+    private Map<String, List<String>> playedCardsThisRound;
 
     public Coordinator(int numPlayers){
 
@@ -85,6 +83,8 @@ public class Coordinator {
 
         //To account for each client handler thread and the main thread also
         barrier = new CyclicBarrier(EXPECTED + 1);
+
+        playedCardsThisRound = new HashMap<String, List<String>>();
 
         try {
             this.init();
@@ -168,7 +168,11 @@ public class Coordinator {
         Collections.shuffle(questionCards);
         currentQuestionCard = questionCards.pop();
 
+        //Tell the threads that the cards have been shuffled
         barrier.await();
+
+        //Coordinator initialisation thread is now done, the handler threads will manage the game now
+        barrier = new CyclicBarrier(barrier.getParties() - 1);
 
     }
 
@@ -257,6 +261,16 @@ public class Coordinator {
         }
 
         return out;
+
+    }
+
+    public void addPlayedCardsThisRound(String player, List<String> playedCards){
+
+        synchronized (playedCardsThisRound){
+
+            playedCardsThisRound.put(player, playedCards);
+
+        }
 
     }
 

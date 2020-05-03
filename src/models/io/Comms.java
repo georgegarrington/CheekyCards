@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.Map;
 
 
 public class Comms {
@@ -107,6 +108,13 @@ public class Comms {
     public void sendCards(List<String> playedCards){
 
         Message m = new Message("playedCards", playedCards);
+        sendToNetwork(m);
+
+    }
+
+    public void sendCardsToJudge(Map<String, List<String>> playedCards){
+
+        Message m = new Message("cardsForJudging", playedCards);
         sendToNetwork(m);
 
     }

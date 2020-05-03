@@ -11,15 +11,17 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import models.client.Client;
 import models.util.Injector;
 import models.util.TraversibleMapIterator;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class Controller {
 
@@ -225,7 +227,6 @@ public class Controller {
 
     }
 
-
     public void initListeners(){
 
         for(StackPane p: cards){
@@ -425,6 +426,20 @@ public class Controller {
     }*/
 
     /**
+     * Let the player know that they are the judge for this round
+     */
+    public void informJudging(){
+
+        Platform.runLater(() -> {
+
+            overlayText.setText("You are the judge for this round. \n Waiting for the other players to \n submit their cards...");
+            overlayText.setVisible(true);
+
+        });
+
+    }
+
+    /**
      * Prompt the player to select the number of cards specified
      */
     public void promptSelection(int n){
@@ -451,13 +466,19 @@ public class Controller {
 
             overlayText.setText("Selection sent to judge. \n Waiting for other players...");
 
+            selecting = false;
+
+            System.out.println("the selected indices are:");
+
             for(int i: selectedIndices){
 
-                flipToBack(cards[i], e -> exitPlayed(i, null));
+                System.out.println(i);
+                handleExit(cards[i]);
+                exitCard(i, null);
+                //flipToBack(cards[i], e -> exitCard(i, null));
+                //handleExit(cards[i]);
 
             }
-
-            selecting = false;
 
             //Tell the client thread that the player has chosen their cards
             new Thread(() -> Injector.waitOnBarrier());
@@ -527,6 +548,12 @@ public class Controller {
         show.setFromX(0);
         show.setToX(1);
 
+        if(onFinished != null){
+
+            show.setOnFinished(onFinished);
+
+        }
+
         hide.setOnFinished(e -> {
 
             setToBack(p);
@@ -535,12 +562,6 @@ public class Controller {
         });
 
         hide.play();
-
-        if(onFinished != null){
-
-            show.setOnFinished(onFinished);
-
-        }
 
     }
 

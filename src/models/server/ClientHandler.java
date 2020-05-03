@@ -2,7 +2,6 @@ package models.server;
 
 import models.io.Comms;
 import models.io.Message;
-import models.server.Coordinator;
 
 import java.net.Socket;
 import java.util.concurrent.CyclicBarrier;
@@ -70,13 +69,73 @@ class ClientHandler implements Runnable {
 
         }
 
+        //Keep the turns zero indexed
+        turn--;
         comms.sendMessage("joinSuccess");
 
         b.await();
+
+        //Wait for the cards to be shuffled and the current question card to be selected
         b.await();
 
         System.out.println("Going to let " + username + " know that the game is starting");
         comms.sendInitMessage(c.getCurrentQuestionCard(), c.getNAnswerCards(7), c.getUsers());
+
+        playGame();
+
+    }
+
+    public void playGame() throws Exception {
+
+        int currentTurn = 0;
+
+        //The game just keeps on going :)
+        while(true){
+
+            if(turn == currentTurn){
+
+                playJudgeRound();
+
+            } else {
+
+                playAnswerRound();
+
+            }
+
+            currentTurn++;
+            if(turn >= currentTurn)
+                currentTurn = 0;
+
+        }
+
+    }
+
+    public void playJudgeRound() throws Exception{
+
+        //Wait for the played cards to be received
+        b.await();
+
+
+
+    }
+
+    public void playAnswerRound() throws Exception {
+
+        Message playedCardsMessage = comms.getMessage();
+
+        if(!playedCardsMessage.header.equals("playedCards")){
+
+            throw new Error("This should be impossible!");
+
+        }
+
+        c.addPlayedCardsThisRound(username, playedCardsMessage.answerCards);
+
+        //Tell judge thread that the cards have now been received
+        b.await();
+
+        //Wait for the judge to make their choice
+        b.await();
 
     }
 

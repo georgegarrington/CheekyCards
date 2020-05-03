@@ -2,6 +2,7 @@ package models.io;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Contains all the information that the client/players need to send to each other
@@ -23,9 +24,19 @@ public class Message implements Serializable {
     //each user mapped to their turn, only used at the start
     public List<String> users;
 
+    //Let the judge know which cards were played in what order and by who
+    public Map<String, List<String>> playedCards;
+
     public Message(String header){
 
         this.header = header;
+
+    }
+
+    public Message(String header, Map<String, List<String>> playedCards){
+
+        this(header);
+        this.playedCards = playedCards;
 
     }
 
