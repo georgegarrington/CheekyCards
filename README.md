@@ -1,4 +1,4 @@
-#Description
+# Description
 
 - NOTE: requires Jfoenix (https://github.com/jfoenixadmin/JFoenix) and Java FX v11+ to run. To run, open in Intellij as a project and add the JFoenix and JavaFX jars as libraries. You could try instead retrieving these packages via Maven if you wish however I have not tested this, however it is something I am looking to implement soon
 - WARNING: inappropriate content. 
