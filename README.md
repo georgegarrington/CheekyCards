@@ -9,7 +9,7 @@
 
 - To run a server session, cd into out/production/CheekyCards and run "java Main server [number of expected players]"
 - The server must be started before any client sessions try to connect. When the server session starts, it will print its global ip address which the host can forward to all the players for them to type into the "paste the link" field of the login prompt
-- If you wish to play on the same machine as the hosting server, simply type "localhost" in the "paste the link" field of the login prompt
+- If you wish to play a client session on the same machine as the hosting server, simply type "localhost" in the "paste the link" field of the login prompt
 
 ## Client Usage
 
