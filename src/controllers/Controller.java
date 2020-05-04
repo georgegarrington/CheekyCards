@@ -101,7 +101,7 @@ public class Controller {
 
             //Nice chaining of animation actions :)
             exitPlayed(i, e -> flipToBack(playedCards[forLambda],
-                    f -> playedCards[forLambda].setVisible(true)));
+                    f -> ((Rectangle) playedCards[forLambda].getChildren().get(0)).setVisible(true)));
 
         }
 
