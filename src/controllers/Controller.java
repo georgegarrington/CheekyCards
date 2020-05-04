@@ -77,6 +77,9 @@ public class Controller {
     //How long each card takes to flip
     private static final int FLIPTIME = 300;
 
+    //The font size of the text displayed on cards
+    private static final int CARDFONTSIZE = 15;
+
     @FXML
     public void initialize(){
 
@@ -714,6 +717,7 @@ public class Controller {
         //Allow 5 pixel margin each side of the text
         t.setWrappingWidth(r.getWidth() - 10);
         t.setFill(Color.BLACK);
+        t.setStyle("-fx-font-size: " + CARDFONTSIZE);
         nodes.add(t);
 
     }
@@ -751,7 +755,7 @@ public class Controller {
         ((Rectangle) nodes.get(0)).setFill(c);
         Text t = new Text("CHEEKY \n CARDS \n    ;-)");
         t.setFill(txt);
-        t.setStyle("-fx-font-size: 15");
+        t.setStyle("-fx-font-size: " + CARDFONTSIZE);
         nodes.add(t);
 
     }
