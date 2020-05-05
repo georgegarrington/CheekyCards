@@ -10,7 +10,9 @@ import models.util.TraversibleMapIterator;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Client {
 
@@ -60,6 +62,10 @@ public class Client {
      */
     public void requestJoin(String str, String answer, String question, String address, Popup p){
 
+        System.out.println("Is the welcome controller null?");
+        System.out.println(Injector.getWelcomeController());
+        Injector.getWelcomeController().toggleButton();
+
         try {
 
             if(socket == null){
@@ -76,6 +82,9 @@ public class Client {
             Injector.error("That link was invalid! Please try again");
             //If an invalid address was given
             socket = null;
+
+            Injector.getWelcomeController().toggleButton();
+            return;
         }
 
         comms.sendJoinRequest(str, answer, question);
@@ -93,6 +102,8 @@ public class Client {
             response = null;
             p.updateMessage("Username denied. Please try again and pick another one");
             p.showButton();
+            Injector.getWelcomeController().toggleButton();
+            return;
 
         } else {
 

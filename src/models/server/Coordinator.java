@@ -230,6 +230,7 @@ public class Coordinator {
             return handlers.size();
 
         }
+
     }
 
     public void addCustomQuestion(String q){

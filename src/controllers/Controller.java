@@ -18,7 +18,6 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import models.client.Client;
 import models.util.Injector;
-import models.util.TraversibleMapIterator;
 
 import java.util.*;
 
@@ -55,7 +54,7 @@ public class Controller {
     //How many cards need to be selected
     private int expected;
 
-    private Set<Integer> activePlayIndices;
+    private List<Integer> activePlayIndices;
 
     //Which index cards have been selected, and in which order
     private Queue<Integer> selectedIndices;
@@ -68,14 +67,14 @@ public class Controller {
 
     //Whether or not the user is the current judge
     private boolean judge;
+    private int currentOption;
 
-    //For use when judging, each user is mapped to the cards they picked
-    //private Map<String, String[]> options;
 
-    private TraversibleMapIterator<String, String[]> optionIt;
-
-    //How long each card takes to flip
+    //Millisecond time to flip cards
     private static final int FLIPTIME = 300;
+
+    //Millisecond time to move cards
+    private static final int MOVE = 500;
 
     //The font size of the text displayed on cards
     private static final int CARDFONTSIZE = 15;
@@ -89,7 +88,7 @@ public class Controller {
 
         cards = new StackPane[]{card1, card2, card3, card4, card5, card6, card7};
         playedCards = new StackPane[]{played1, played2, played3};
-        activePlayIndices = new HashSet<Integer>();
+        activePlayIndices = new ArrayList<Integer>();
 
         setToBack(questionCard);
         for(StackPane p: cards){
@@ -281,6 +280,7 @@ public class Controller {
 
     public void handleClick(StackPane p){
 
+        //TODO for testing delete later
         System.out.println("went in handle click method");
         System.out.println("selected indices: " + selectedIndices.size());
         System.out.println("expected: " + expected);
@@ -319,13 +319,69 @@ public class Controller {
 
     }
 
+    /**
+     * Called when the right arrow is clicked
+     */
     public void goRight(){
+
+        List<String> nextOption = client.getRight();
+        if(nextOption == null){
+
+            return;
+
+        } else {
+
+            currentOption++;
+            display.setText("OPTION " + currentOption);
+
+        }
+
+        for(int i = 0; i < activePlayIndices.size(); i++){
+
+            final int f = i;
+
+            //Exit the played card then enter the next play card
+            exitPlayed(activePlayIndices.get(i), e -> enterPlayed(activePlayIndices.get(f), nextOption.get(f)));
+
+        }
+
+        /*
+        for(int i: activePlayIndices){
+
+            exitPlayed(i, enterPlayed(nextO););
+
+        }*/
 
         right.setFill(Color.LIMEGREEN);
 
     }
 
+    /**
+     * Called when the left arrow is clicked
+     */
     public void goLeft(){
+
+        List<String> nextOption = client.getLeft();
+        if(nextOption == null){
+
+            //If there is no option to the left then do nothing
+            return;
+
+        } else {
+
+            currentOption--;
+            display.setText("OPTION " + currentOption);
+
+        }
+
+        for(int i = 0; i < activePlayIndices.size(); i++){
+
+            final int f = i;
+
+            //Exit the played card then enter the next play card
+            exitPlayed(activePlayIndices.get(i), e -> enterPlayed(activePlayIndices.get(f), nextOption.get(f)));
+
+        }
 
         left.setFill(Color.LIMEGREEN);
 
@@ -481,14 +537,14 @@ public class Controller {
 
         }
 
-        activePlayIndices.add(1);
-
         for(int i: activePlayIndices){
 
             System.out.println("Entering: " + initial.get(0));
             enterPlayed(i, initial.remove(0));
 
         }
+
+        currentOption = 1;
 
     }
 
@@ -497,6 +553,14 @@ public class Controller {
         if(n < 1 || n > 3){
 
             throw new Error("This should never be happening!");
+
+        }
+
+        switch(n){
+
+            case 1: activePlayIndices.add(1);
+            case 2: activePlayIndices.addAll(Arrays.asList(new Integer[]{0,2}));
+            case 3: activePlayIndices.addAll(Arrays.asList(new Integer[]{0,1,2}));
 
         }
 
@@ -767,7 +831,7 @@ public class Controller {
      */
     public void exitPlayed(int i, EventHandler onFinished){
 
-        TranslateTransition transition = new TranslateTransition(Duration.millis(1000), playedCards[i]);
+        TranslateTransition transition = new TranslateTransition(Duration.millis(MOVE), playedCards[i]);
         transition.setByY(-300);
         flipToBack(playedCards[i], e -> transition.play());
 
@@ -787,7 +851,7 @@ public class Controller {
      */
     public void enterPlayed(int i, String str){
 
-        TranslateTransition transition = new TranslateTransition(Duration.millis(1000), playedCards[i]);
+        TranslateTransition transition = new TranslateTransition(Duration.millis(MOVE), playedCards[i]);
         transition.setByY(300);
         transition.play();
         transition.setOnFinished(e -> flipToNext(playedCards[i], str));
@@ -801,7 +865,7 @@ public class Controller {
      */
     public void exitCard(int i, EventHandler onFinished){
 
-        TranslateTransition transition = new TranslateTransition(Duration.millis(1000), cards[i]);
+        TranslateTransition transition = new TranslateTransition(Duration.millis(MOVE), cards[i]);
         transition.setByY(300);
 
         //First flip card to back then exit
@@ -826,7 +890,7 @@ public class Controller {
             e.printStackTrace();
         }*/
 
-        TranslateTransition transition = new TranslateTransition(Duration.millis(1000), cards[i]);
+        TranslateTransition transition = new TranslateTransition(Duration.millis(MOVE), cards[i]);
         transition.setByY(-300);
         transition.play();
         transition.setOnFinished(e -> flipToNext(cards[i], str));

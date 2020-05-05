@@ -29,7 +29,7 @@
          <right>
             <VBox prefHeight="292.0" prefWidth="154.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label text="Leaderboard" underline="true" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="16.0" prefWidth="157.0" text="Leaderboard" underline="true" />
                   <GridPane fx:id="leaderboardGrid" prefHeight="243.0" prefWidth="100.0">
                     <columnConstraints>
                       <ColumnConstraints fx:id="leaderBoard" hgrow="SOMETIMES" maxWidth="103.0" minWidth="10.0" prefWidth="100.0" />

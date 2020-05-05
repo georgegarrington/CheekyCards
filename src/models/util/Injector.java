@@ -1,5 +1,6 @@
 package models.util;
 
+import controllers.WelcomeController;
 import javafx.stage.Stage;
 import models.client.Client;
 import models.server.Coordinator;
@@ -14,6 +15,7 @@ import java.util.concurrent.CyclicBarrier;
 public class Injector {
 
     private static Launcher launcher;
+    private static WelcomeController wc;
     private static Client client;
     private static Coordinator coordinator;
     private static boolean serverSession;
@@ -147,6 +149,18 @@ public class Injector {
     public static Stage getWelcomeStage(){
 
         return welcomeStage;
+
+    }
+
+    public static void associateWelcomeController(WelcomeController wcRef){
+
+        wc = wcRef;
+
+    }
+
+    public static WelcomeController getWelcomeController(){
+
+        return wc;
 
     }
 

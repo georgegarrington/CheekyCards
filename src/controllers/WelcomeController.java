@@ -1,13 +1,12 @@
 package controllers;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import controllers.popups.Popup;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import models.client.Client;
 import models.util.Injector;
-
-import javax.swing.*;
 
 public class WelcomeController {
 
@@ -16,6 +15,7 @@ public class WelcomeController {
     @FXML private JFXTextField username;
     @FXML private JFXTextField answer;
     @FXML private JFXTextField question;
+    @FXML private JFXButton joinButton;
 
     private Client client;
 
@@ -23,7 +23,10 @@ public class WelcomeController {
     public void initialize(){
 
         client = Injector.getClient();
-        client.associateWelcomeController(this);
+
+        System.out.println("Hello Im in welcome controller initialize method.");
+        System.out.println("About to inject my reference into the client...");
+        Injector.associateWelcomeController(this);
 
     }
 
@@ -43,6 +46,15 @@ public class WelcomeController {
                 e.printStackTrace();
             }
         }).start();
+
+    }
+
+    /**
+     * Toggle the button on or off
+     */
+    public void toggleButton(){
+
+        Platform.runLater(() -> joinButton.setDisable(!joinButton.isDisable()));
 
     }
 

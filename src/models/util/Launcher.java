@@ -33,7 +33,7 @@ public class Launcher extends Application {
                 Parent root = null;
 
                 try {
-                    root = FXMLLoader.load(getClass().getResource("views/layout.fxml"));
+                    root = FXMLLoader.load(getClass().getClassLoader().getResource("views/layout.fxml"));
                     System.out.println("value of root: " + root.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -60,7 +60,7 @@ public class Launcher extends Application {
             Injector.associateWelcomeStage(stage);
             Parent root = null;
             try {
-                root = FXMLLoader.load(getClass().getResource("views/welcome.fxml"));
+                root = FXMLLoader.load(getClass().getClassLoader().getResource("views/welcome.fxml"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -35,7 +35,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
@@ -92,7 +92,9 @@
       <workItem from="1588444150837" duration="13002000" />
       <workItem from="1588458495599" duration="2413000" />
       <workItem from="1588596703225" duration="2677000" />
-      <workItem from="1588680255839" duration="4778000" />
+      <workItem from="1588680255839" duration="7326000" />
+      <workItem from="1588687650568" duration="121000" />
+      <workItem from="1588687830468" duration="1658000" />
     </task>
     <servers />
   </component>
@@ -100,11 +102,11 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="169" y="164" width="1529" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588517931421">
+    <state x="169" y="149" width="1529" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588688119594">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="134" y="202" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.877@0.23.1440.877" timestamp="1588458548709" />
-    <state x="169" y="164" width="1529" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1588517931421" />
+    <state x="169" y="149" width="1529" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1588688119594" />
     <state x="804" y="256" width="374" height="592" key="#com.intellij.ide.util.MemberChooser" timestamp="1588443499519">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -117,30 +119,30 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="732" y="298" width="524" height="514" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1588440976387" />
-    <state x="618" y="300" width="735" height="520" key="FileChooserDialogImpl" timestamp="1588528857825">
+    <state x="618" y="290" width="735" height="520" key="FileChooserDialogImpl" timestamp="1588687453897">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="618" y="300" width="735" height="520" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1588528857825" />
-    <state width="1802" height="465" key="GridCell.Tab.0.bottom" timestamp="1588612451650">
+    <state x="618" y="290" width="735" height="520" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1588687453897" />
+    <state width="1802" height="465" key="GridCell.Tab.0.bottom" timestamp="1588689331990">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1398" height="231" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1588544988190" />
-    <state width="1802" height="465" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1588612451650" />
-    <state width="1802" height="465" key="GridCell.Tab.0.center" timestamp="1588612451650">
+    <state width="1802" height="465" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1588689331990" />
+    <state width="1802" height="465" key="GridCell.Tab.0.center" timestamp="1588689331989">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1398" height="231" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1588544988189" />
-    <state width="1802" height="465" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1588612451650" />
-    <state width="1802" height="465" key="GridCell.Tab.0.left" timestamp="1588612451650">
+    <state width="1802" height="465" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1588689331988" />
+    <state width="1802" height="465" key="GridCell.Tab.0.left" timestamp="1588689331987">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1398" height="231" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1588544988189" />
-    <state width="1802" height="465" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1588612451650" />
-    <state width="1802" height="465" key="GridCell.Tab.0.right" timestamp="1588612451650">
+    <state width="1802" height="465" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1588689331987" />
+    <state width="1802" height="465" key="GridCell.Tab.0.right" timestamp="1588689331989">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1398" height="231" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1588544988190" />
-    <state width="1802" height="465" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1588612451650" />
+    <state width="1802" height="465" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1588689331989" />
     <state width="1802" height="340" key="GridCell.Tab.1.bottom" timestamp="1588454268775">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -157,22 +159,26 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1802" height="340" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1588454268775" />
-    <state x="479" y="131" width="1024" height="852" key="SettingsEditor" timestamp="1588528869783">
+    <state x="479" y="126" width="1024" height="852" key="SettingsEditor" timestamp="1588688090810">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="317" y="110" key="SettingsEditor/0.23.1440.877@0.23.1440.877" timestamp="1588458555634" />
-    <state x="479" y="131" width="1024" height="852" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1588528869783" />
+    <state x="479" y="126" width="1024" height="852" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1588688090810" />
     <state x="438" y="181" width="1106" height="752" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1588446630065">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="438" y="181" width="1106" height="752" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/72.27.1848.1053@72.27.1848.1053" timestamp="1588446630065" />
+    <state x="304" y="151" width="1380" height="808" key="new project wizard" timestamp="1588687463043">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="304" y="151" width="1380" height="808" key="new project wizard/72.27.1848.1053@72.27.1848.1053" timestamp="1588687463043" />
     <state x="660" y="249" width="672" height="677" key="run.anything.popup" timestamp="1588353949259">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="660" y="249" width="672" height="677" key="run.anything.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1588353949259" />
-    <state x="659" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1588536834833">
+    <state x="659" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1588689466647">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="659" y="255" width="672" height="678" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1588536834833" />
+    <state x="659" y="255" width="672" height="678" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1588689466647" />
   </component>
 </project>
