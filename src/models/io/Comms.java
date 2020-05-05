@@ -80,6 +80,13 @@ public class Comms {
 
     }
 
+    /**
+     * Send a join request to the server
+     *
+     * @param requested
+     * @param answer
+     * @param question
+     */
     public void sendJoinRequest(String requested, String answer, String question){
 
         Message m = new Message("joinRequest", requested, answer, question);
@@ -97,14 +104,11 @@ public class Comms {
 
     }
 
-    //How many new deck cards the client that calls this needs
-    public void requestNewDeckCards(int n){
-
-        Message m = new Message("requestNewDeckCards", n);
-        sendToNetwork(m);
-
-    }
-
+    /**
+     * Send played cards to the server, server counts how many was recieved so it
+     * kniow
+     * @param playedCards
+     */
     public void sendCards(List<String> playedCards){
 
         Message m = new Message("playedCards", playedCards);
@@ -120,7 +124,7 @@ public class Comms {
     }
 
     /**
-     * Tell all client sessions to go to the option on the right
+     * Tell all client sessions to go to the option on the right, i.e. ones that are not judging
      */
     public void goRight(){
 
@@ -130,7 +134,7 @@ public class Comms {
     }
 
     /**
-     * Tell all client sessions to go to the option on the left
+     * Tell all client sessions to go to the option on the left, i.e. ones that are not judging
      */
     public void goLeft(){
 

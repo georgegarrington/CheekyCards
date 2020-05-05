@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Contains all the information that the client/players need to send to each other
+ * Contains all the information that the server and players need to send to each other
  */
 public class Message implements Serializable {
 
@@ -26,8 +26,6 @@ public class Message implements Serializable {
 
     //Let the judge know which cards were played in what order and by who
     public Map<String, List<String>> playedCards;
-
-    public static final long serialVersionUID = 1L;
 
     public Message(String header){
 

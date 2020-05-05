@@ -3,7 +3,7 @@ package models.util;
 import java.util.*;
 
 /**
- * Used by the controller class to go back and forth between the options, an iterator
+ * Used by the controller class to go back and forth between the options, a data structure
  * where you can go right and left but which updates the index it's "head" is at
  * each time you call goRight() or goLeft()
  */
@@ -19,10 +19,8 @@ public class TraversibleMapIterator<U, V> {
     public TraversibleMapIterator(Map<U, V> map){
 
         this.map = map;
-
         orderedKeys = new ArrayList<U>();
         orderedKeys.addAll(map.keySet());
-
         endIndex = map.size() - 1;
 
     }
@@ -81,7 +79,7 @@ public class TraversibleMapIterator<U, V> {
 
     }
 
-    public List<U> getKeyList(){
+    public List<U> getOrderedKeys(){
 
         return orderedKeys;
 

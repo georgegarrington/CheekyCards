@@ -13,6 +13,7 @@ import java.util.concurrent.CyclicBarrier;
  */
 public class Injector {
 
+    private static Launcher launcher;
     private static Client client;
     private static Coordinator coordinator;
     private static boolean serverSession;
@@ -50,9 +51,15 @@ public class Injector {
 
         int val = Integer.parseInt(numPlayers);
 
-        if (val > 7) {
+        if(val < 1){
 
             throw new Error("Invalid argument! Please enter a number between 1 and 7");
+
+        }
+
+        if (val > 7) {
+
+            throw new Error("Only a maximum of 7 players are supported at the moment!");
 
         }
 
@@ -119,9 +126,21 @@ public class Injector {
 
     }
 
-    public static void associateWelcomeStage(Stage stage){
+    public static void associateLauncher(Launcher launcherRef){
 
-        welcomeStage = stage;
+        launcher = launcherRef;
+
+    }
+
+    public static Launcher getLauncher(){
+
+        return launcher;
+
+    }
+
+    public static void associateWelcomeStage(Stage stageRef){
+
+        welcomeStage = stageRef;
 
     }
 

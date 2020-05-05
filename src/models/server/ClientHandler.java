@@ -8,6 +8,7 @@ import java.net.Socket;
 
 class ClientHandler implements Runnable {
 
+    //The turn and username of the client communicating with this handler thread
     private int turn;
     private String username;
 
@@ -55,8 +56,8 @@ class ClientHandler implements Runnable {
                 throw new Error("This should not be possible!");
             }
 
-
-            turn = c.addUser(m.requestedName, this);
+            username = m.requestedName;
+            turn = c.addUser(this);
 
             if(turn == 0){
 
@@ -67,7 +68,6 @@ class ClientHandler implements Runnable {
                 //TODO possibility of two identical answer and question cards being picked very unlikely, leave like this for now
                 c.addCustomAnswer(m.customAnswer);
                 c.addCustomQuestion(m.questionCard);
-                username = m.requestedName;
 
             }
 
@@ -77,11 +77,13 @@ class ClientHandler implements Runnable {
         turn--;
         comms.sendMessage("joinSuccess");
 
+        //TODO for testing delete
         System.out.println("Client handler for: " + username + " is now waiting 1st");
 
         //Tell the coordinator to start shuffling and get the question card ready
         Injector.waitOnBarrier();
 
+        //TODO for testing delete
         System.out.println(username + ": ok finished first now waiting on second");
 
         //Wait for the cards to be shuffled and the current question card to be selected
@@ -91,7 +93,7 @@ class ClientHandler implements Runnable {
 
         Thread.sleep(2000);
 
-
+        //TODO for testing delete
         System.out.println("Going to let " + username + " know that the game is starting");
         comms.sendInitMessage(c.getCurrentQuestionCard(), c.getNAnswerCards(7), c.getUsers());
 
@@ -126,19 +128,18 @@ class ClientHandler implements Runnable {
 
     public void playJudgeRound() throws Exception{
 
+        //TODO for testing delete later
         System.out.println(username + " is judging in this round");
-
         System.out.println("judge handler thread now going to wait...");
+
         //Wait for the played cards to be received
         Injector.waitOnBarrier();
-        System.out.println("judge handler thread finished waiting");
 
+        //TODO for testing delete later
+        System.out.println("judge handler thread finished waiting");
         System.out.println("played cards received. Sending to judge...");
 
         comms.sendCardsToJudge(c.getPlayedCardsThisRound());
-
-
-
 
     }
 
@@ -164,9 +165,11 @@ class ClientHandler implements Runnable {
 
         c.addPlayedCardsThisRound(username, playedCardsMessage.answerCards);
 
+        //TODO for testing delete later
         System.out.println("About to tell the judge the cards were received");
         System.out.println("Also the number waiting on the barrier is: " + Injector.getBarrier().getNumberWaiting() +
                 " and the number of parties is: " + Injector.getBarrier().getParties());
+
         //Tell judge thread that the cards have now been received
         Injector.waitOnBarrier();
 

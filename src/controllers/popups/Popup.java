@@ -2,7 +2,6 @@ package controllers.popups;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,6 +31,8 @@ public class Popup {
 
         popup = new Stage();
         popup.setResizable(false);
+
+        //Makes the max, min and close buttons disappear and the bar they are in too
         popup.initStyle(StageStyle.UNDECORATED);
         VBox v = new VBox();
         v.setAlignment(Pos.CENTER);
@@ -44,7 +45,10 @@ public class Popup {
         label.setStyle("-fx-font-size: 16");
         label.setPadding(new Insets(0,0,20,0));
         v.getChildren().add(label);
+
+        //The button will be invisible initially until login response received from server
         button = new JFXButton("OK");
+        button.setVisible(false);
         button.setOnAction(e -> Platform.runLater(() -> popup.close()));
         v.getChildren().add(button);
 
@@ -52,7 +56,7 @@ public class Popup {
 
     }
 
-    public void updateLabel(String text){
+    public void updateMessage(String text){
 
         Platform.runLater(() -> label.setText(text));
 

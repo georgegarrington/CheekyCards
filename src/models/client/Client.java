@@ -1,7 +1,6 @@
 package models.client;
 
 import controllers.Controller;
-import controllers.WelcomeController;
 import controllers.popups.Popup;
 import javafx.application.Platform;
 import models.io.Comms;
@@ -15,44 +14,43 @@ import java.util.*;
 
 public class Client {
 
-    private final int SERVERPORT = 5005;
-    private String ADDRESS = "";
+    private static final int SERVERPORT = 5005;
 
     //Once the ui has loaded up the controller will add its reference here
     private Controller controller;
-    private WelcomeController welcomeController;
 
     //The last message just sent by the server
     private Message lastMessage;
     private Socket socket;
     private Comms comms;
+
+    //The players mapped to what turn they have
     private Map<String, Integer> players;
+
+    //This players information
     private String myUsername;
     private int myTurn;
-
-
     private String currentQuestionCard;
-    private List<String> myDeck = new ArrayList<String>(7);
+    private String[] myDeck;
+
+    //Used by the judge to look through the cards played
+    private TraversibleMapIterator<String, List<String>> traversible;
 
     public Client(){
 
-        try {
-            this.init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //This information will be recieved in the init message
+        players = new HashMap<String, Integer>();
+        myDeck = new String[7];
 
     }
 
+    /**
+     * Once the FXML initialize method is called by the
+     * @param controller
+     */
     public void associateController(Controller controller){
 
         this.controller = controller;
-
-    }
-
-    public void associateWelcomeController(WelcomeController welcomeController){
-
-        this.welcomeController = welcomeController;
 
     }
 
@@ -62,14 +60,12 @@ public class Client {
      */
     public void requestJoin(String str, String answer, String question, String address, Popup p){
 
-        ADDRESS = address;
-
         try {
 
             if(socket == null){
 
-                System.out.println("value of address is: " + ADDRESS);
-                socket = new Socket(ADDRESS, SERVERPORT);
+                System.out.println("value of address is: " + address);
+                socket = new Socket(address, SERVERPORT);
                 comms = new Comms(socket);
 
             }
@@ -90,20 +86,17 @@ public class Client {
             e.printStackTrace();
         }
 
-        //System.out.println("response sent!");
-        //System.out.println("waiting for servers response...");
-
         Message response = comms.getMessage();
 
         if(response.header.equals("joinDenied")){
 
             response = null;
-            p.updateLabel("Username denied. Please try again and pick another one");
+            p.updateMessage("Username denied. Please try again and pick another one");
             p.showButton();
 
         } else {
 
-            p.updateLabel("Username accepted! Press ok to enter the game");
+            p.updateMessage("Username accepted! Press ok to enter the game");
             p.updateAction(e -> {
 
                 myUsername = str;
@@ -111,18 +104,17 @@ public class Client {
                 p.close();
                 Platform.runLater(() -> Injector.getWelcomeStage().close());
 
-                //To tell the main app to open
-                Injector.waitOnBarrier();
                 new Thread(() -> {
 
-                    System.out.println("waiting for init message from server...");
-                    lastMessage = comms.getMessage();
-                    System.out.println("init message recieved");
-                    //To let controller know the init message has been received
-                    System.out.println("waiting on barrier after getting messaged");
+                    //To tell the main app to open
                     Injector.waitOnBarrier();
-                    System.out.println("finished waiting on barrier after getting message");
-                    //System.out.println("init message received: " + lastMessage.header);
+
+                    //Wait for init message from server
+                    lastMessage = comms.getMessage();
+
+                    //To let controller know the init message has been received
+                    Injector.waitOnBarrier();
+
                 }).start();
 
             });
@@ -134,8 +126,11 @@ public class Client {
 
     public void startGame(){
 
-        //Wait for the message to be received then start
+        //Wait for the init message to be received then start
         Injector.waitOnBarrier();
+
+        if(!lastMessage.header.equals("gameStarting"))
+            throw new Error("Expected the game to start! This should not be happening!");
 
         for(int i = 0; i < lastMessage.users.size(); i++){
 
@@ -161,15 +156,18 @@ public class Client {
         //The game just keeps on going :)
         while(true){
 
+            //TODO testing
             System.out.println("my turn is: " + myTurn);
 
             if(myTurn == currentTurn){
 
+                //TODO testing
                 System.out.println("playing judge round");
                 playJudgeRound();
 
             } else {
 
+                //TODO testing
                 System.out.println("Playing answer round");
                 playAnswerRound();
 
@@ -189,8 +187,11 @@ public class Client {
 
         controller.informJudging();
 
+        //TODO testing
         System.out.println("Judge is now going to wait for played cards to be received");
         Message cardsForJudge = comms.getMessage();
+
+        //TODO testing
         System.out.println("Judge finished waiting cos I got a message! :)");
 
         if(!cardsForJudge.header.equals("cardsForJudging")){
@@ -203,8 +204,8 @@ public class Client {
 
         traversible = new TraversibleMapIterator<String, List<String>>(cardsForJudge.playedCards);
 
+        //TODO for testing
         System.out.println("Contents of played cards:");
-
         for(String s: cardsForJudge.playedCards.keySet()){
 
             System.out.println("Player: " + s + " who played:");
@@ -217,18 +218,19 @@ public class Client {
 
         }
 
+        //TODO for testing
         System.out.println("Contents of traversible key list:");
-
-        for(String s: traversible.getKeyList()){
+        for(String s: traversible.getOrderedKeys()){
 
             System.out.println(s);
 
         }
 
+        //TODO for testing
         System.out.println("Value of current traversible index: " + traversible.getCurrentIndex());
-
         System.out.println("Value of current traversible objet: " + traversible.getCurrentObj());
 
+        //Start with the first option
         controller.presentOptions(traversible.getCurrentObj());
 
         //Wait for the judge to pick their option
@@ -236,10 +238,9 @@ public class Client {
 
     }
 
-    private TraversibleMapIterator<String, List<String>> traversible;
-
     /**
-     * Returns the option to the right (if there is one)
+     * Returns the option to the right (if there is one), returns null if
+     * there is no answer to the right
      * @return
      */
     public List<String> getRight(){
@@ -255,7 +256,8 @@ public class Client {
     }
 
     /**
-     * Returns the option to the left (if there is one)
+     * Returns the option to the left (if there is one), returns null if
+     * tehre is no answer to the left
      * @return
      */
     public List<String> getLeft(){
@@ -272,161 +274,28 @@ public class Client {
 
     public void playAnswerRound(){
 
+        //TODO testing
         System.out.println("Playing answer round");
+
         controller.promptSelection(countNumRequired(currentQuestionCard));
 
         //Wait until the player has chosen a valid selection
         Injector.waitOnBarrier();
+
+        //TODO for testing
         System.out.println("Past barrier so client must have chosen valid cards");
 
         List<String> playedCards = controller.getSelected();
 
+        //TODO for testing
         System.out.println("Now going to send cards to judge. Size: " + playedCards.size());
+
         comms.sendCards(playedCards);
+
+        //TODO for testing
         System.out.println("sent");
 
     }
-
-    public void init() throws Exception {
-
-        players = new HashMap<String, Integer>();
-
-    }
-
-    public void setupGame(){
-
-        if(!lastMessage.header.equals("gameStarting")){
-
-            Injector.error("Expected the game to start! uh oh this shouldn't be happening");
-
-        } else {
-
-            //TODO for testing delete later
-            System.out.println("Game starting woohoo!");
-
-        }
-
-        //TODO for testing delete later
-        System.out.println("The list of players in order by their turn is: ");
-
-
-        for(int i = 0; i < lastMessage.users.size(); i++){
-
-            if(lastMessage.users.get(i).equals(myUsername))
-                myTurn = i;
-
-            players.put(lastMessage.users.get(i), i);
-            System.out.println(lastMessage.users.get(i));
-
-        }
-
-        System.out.println("my turn is: " + myTurn);
-
-        //TODO for testing delete later
-        System.out.println("My initial deck cards are: ");
-        for(String str: lastMessage.answerCards){
-
-            System.out.println(str);
-
-        }
-
-        myDeck.addAll(lastMessage.answerCards);
-
-        //TODO for testing delete later
-        System.out.println("The first question card is: " + lastMessage.questionCard);
-
-    }
-
-    boolean judging = true;
-
-    Scanner s = new Scanner(System.in);
-
-    /* AN EXAMPLE OF HOW IT MAY WORK, VERY MESSY
-    public void playGame(){
-
-        //START
-        if(currentTurn == myTurn){
-
-            judging = true;
-
-        }
-
-        System.out.println("The current judge is: ");
-
-        if(judging){
-
-            System.out.print("YOU!");
-            System.out.println("When the other players have made their selections,");
-            System.out.println("you will be presented with them here and choose the best one");
-
-        } else {
-
-            System.out.print(players.get(currentTurn));
-
-        }
-
-        System.out.println("----------------------------");
-        System.out.println("QUESTION CARD:");
-        System.out.println();
-        System.out.println(currentQuestionCard);
-        System.out.println();
-
-        System.out.println("------------------------------------------");
-
-
-        if(!judging){
-
-            int numNeeded = countBlanks(currentQuestionCard);
-
-            System.out.println("Please pick " + numNeeded + " cards to");
-            System.out.println("fill in the blanks. Your options are: ");
-            System.out.println("-------------------------------------------");
-
-            for(int i = 1; i < myDeck.size(); i++){
-
-                System.out.println(i + ".");
-
-                System.out.println(myDeck.get(i));
-                System.out.println();
-
-            }
-
-            System.out.println("-------------------------------------------");
-
-            System.out.println("What is your choice? Please enter your number");
-
-            int selection = 0;
-
-            while(selection == 0){
-
-                String choice = s.nextLine().trim();
-
-                if (!Character.isDigit(choice.charAt(0)) || choice.length() > 1
-                        || Integer.valueOf(choice.charAt(0)) > 7
-                        || Integer.valueOf(choice.charAt(0)) < 1){
-
-                    System.out.println("Your selection was invalid! Please try again");
-                    choice = null;
-
-                } else {
-
-                    selection = Integer.valueOf(choice.charAt(0));
-
-                }
-
-            }
-
-
-
-        }
-
-        //END
-        currentTurn++;
-        if(currentTurn > players.size()){
-            currentTurn = 1;
-        }
-
-    }*/
 
     /**
      * How many cards the player needs to play

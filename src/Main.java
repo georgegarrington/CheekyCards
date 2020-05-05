@@ -1,4 +1,5 @@
 import models.util.Injector;
+import models.util.Launcher;
 
 public class Main {
 
@@ -11,13 +12,10 @@ public class Main {
             //Seperate GUI stuff from main method
             new Launcher().initGUI(args);
 
+            //A server session is only started if specified as an argument
         } else if (args[0].equals("server")) {
 
             Injector.initServerSession(args[1]);
-
-        } else {
-
-            throw new Error("Usage: java Main server [number of players], or provide no arguments to start a client session");
 
         }
 

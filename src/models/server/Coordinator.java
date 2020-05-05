@@ -14,41 +14,6 @@ import java.util.*;
 
 public class Coordinator {
 
-    /**
-     * Get the IP address this server is hosting on to give it to the clients
-     * so they can play the game
-     * @return
-     */
-    public static String getIP(){
-
-        URL whatismyip = null;
-        try {
-            whatismyip = new URL("http://checkip.amazonaws.com");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new InputStreamReader(
-                    whatismyip.openStream()));
-            return in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        //Should never happen but add incase
-        return null;
-
-    }
-
     //The port this server is listening on
     private static final int PORT = 5005;
 
@@ -58,8 +23,6 @@ public class Coordinator {
     private String currentQuestionCard;
     private Stack<String> questionCards;
     private Stack<String> answerCards;
-
-    private List<String> users;
     private List<ClientHandler> handlers;
     private Map<String, List<String>> playedCardsThisRound;
 
@@ -78,7 +41,6 @@ public class Coordinator {
         System.out.println("Cards loaded. Question cards size: " + questionCards.size());
         System.out.println("And the answer cards list size: " + answerCards.size());
 
-        users = new ArrayList<String>();
         handlers = new ArrayList<ClientHandler>();
 
         //To account for each client handler thread and the main thread also
@@ -141,6 +103,42 @@ public class Coordinator {
 
     }
 
+    /**
+     * Get the IP address this server is hosting on to give it to the clients
+     * so they can play the game
+     * @return
+     */
+    public static String getIP(){
+
+        URL whatismyip = null;
+        try {
+            whatismyip = new URL("http://checkip.amazonaws.com");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(
+                    whatismyip.openStream()));
+            return in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //Should never happen but add incase
+        return null;
+
+    }
+
+
     public void init() throws Exception{
 
         ServerSocket ss = new ServerSocket(5005);
@@ -179,7 +177,8 @@ public class Coordinator {
 
 
         System.out.println("Coordinator: how many threads waiting on the barrier? " + Injector.getBarrier().getNumberWaiting());
-        //Tell the threads that the cards have been shuffled
+
+        //Tell the client handlers that the cards have been shuffled
         Injector.waitOnBarrier();
 
         System.out.println("Coordinator: about to make a new barrier");
@@ -193,34 +192,44 @@ public class Coordinator {
 
     }
 
-    /**
-     * Returns 0 if failed to add, and if successful then returns the turn of the player
-     * @param username
-     * @return
-     */
-    public int addUser(String username, ClientHandler h){
+    public List<String> getUsers(){
 
-        synchronized (users){
+        List<String> out = new ArrayList<String>();
 
-            synchronized (handlers){
+        synchronized (handlers){
 
-                if(!users.contains(username)){
-
-                    users.add(username);
-                    handlers.add(h);
-                    System.out.println("new player added: " + username);
-                    return handlers.size();
-
-                } else {
-
-                    return 0;
-
-                }
-
+            for(ClientHandler h: handlers){
+                out.add(h.getUsername());
             }
 
         }
 
+        return out;
+
+    }
+
+    /**
+     * Returns 0 if failed to add, and if successful then returns the turn of the player
+     * @param h
+     * @return
+     */
+    public int addUser(ClientHandler h){
+
+        synchronized (handlers){
+
+            //First check there are no registered users with the same username
+            for(ClientHandler hn: handlers){
+
+                if(hn.getUsername().equals(h.getUsername()))
+                    return 0;
+
+            }
+
+            handlers.add(h);
+            System.out.println("new player added: " + h.getUsername());
+            return handlers.size();
+
+        }
     }
 
     public void addCustomQuestion(String q){
@@ -244,12 +253,6 @@ public class Coordinator {
             answerCards.push(a);
 
         }
-
-    }
-
-    public List<String> getUsers(){
-
-        return users;
 
     }
 
@@ -281,6 +284,12 @@ public class Coordinator {
 
     }
 
+    /**
+     * The player who played these cards and which cards they played
+     *
+     * @param player
+     * @param playedCards
+     */
     public void addPlayedCardsThisRound(String player, List<String> playedCards){
 
         synchronized (playedCardsThisRound){

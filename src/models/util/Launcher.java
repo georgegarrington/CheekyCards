@@ -1,17 +1,18 @@
+package models.util;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import models.util.Injector;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
 
 public class Launcher extends Application {
 
     public void initGUI(String[] args) {
+
 
         doLoginSequence();
         launch(args);
