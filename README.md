@@ -1,5 +1,6 @@
 # Description
 
+- NOTE: This is unfinished, it is almost done but full gameplay hasn't quite been perfected
 - NOTE: requires Jfoenix (https://github.com/jfoenixadmin/JFoenix) and Java FX v11+ to run. To run, open in Intellij as a project and add the JFoenix and JavaFX jars as libraries. You could try instead retrieving these dependencies through Maven if you wish however I have not tested this, although it is something I am looking to implement soon (eventually I will have a working jar file ready for the average joe to play)
 - WARNING: inappropriate content. 
 - Credit for the original text file for questions and answers goes to https://github.com/nodanaonlyzuul/against-humanity, I have changed the questions and answers slightly here and there. 
